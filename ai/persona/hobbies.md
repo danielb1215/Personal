@@ -1,5 +1,9 @@
 # Daniel Bolivar — Hobbies & Daily Life
 
+## Location
+
+Based in **Bogotá, Colombia**. Travels frequently but for short trips — most time spent in Bogotá.
+
 ## How I Spend My Days
 
 **Weekdays:**
@@ -14,11 +18,11 @@
 ## Hobbies & Interests
 
 - **Cycling** — road bike, regular structured training schedule (Tue/Thu + full weekends)
-- **Scuba diving** — recreational diving
-- **Freediving** — breath-hold diving
+- **Scuba diving** — PADI Advanced Open Water certified, 50+ dives logged
+- **Freediving** — AIDA 3 certified
 - **Hiking** — weekend outdoor activity
-- **Music** — house & techno, raving / going to events
-- **Traveling** — core life value, exploring new places and cultures
+- **Music** — house & techno; attends local Bogotá scene events and travels internationally for festivals
+- **Traveling** — core life value; frequent short trips, mostly regional/international from Bogotá
 
 ## What Energizes Me
 

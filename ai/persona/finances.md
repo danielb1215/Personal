@@ -1,5 +1,20 @@
 # Daniel Bolivar — Financial Context
 
+## Location & Currency
+
+- Based in **Bogotá, Colombia** — earns in **USD**, spends in **COP**
+- This is a significant advantage: USD income with Colombian cost of living gives strong purchasing power
+- No currency conversion friction for US clients or platforms (Stripe, Gumroad, Upwork, etc.)
+
+## Legal / Tax Status
+
+- **Freelancer / independent contractor** in Colombia
+- Already structured to receive foreign income — no corporate setup needed to start a side business
+
+## Existing MRR
+
+- **$0** — salary only, no existing side income streams
+
 ## Current Income
 
 - **Primary salary:** ~$4,600/month USD (remote job at Crowd Cow)
