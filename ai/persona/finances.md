@@ -4,27 +4,25 @@
 
 ## Current Income
 
-<!-- Approximate monthly/annual income from primary job -->
+USD $4.6k
 
 ## Monthly Expenses
 
-<!-- Rough breakdown: rent, food, transport, subscriptions, etc. -->
+USD $2k-3k
 
 ## Financial Goals
 
-<!-- What are you saving toward? Timeline? -->
+I'm looking to have a passive income or MRR around $2-3k that cover my current expenses or at least 50% of them 
 
 ## Risk Tolerance
 
-<!-- How comfortable are you with financial risk in a side business?
-- Low: need stable income first
-- Medium: ok to invest some savings
-- High: ready to go all-in -->
+- Medium
+
 
 ## Time Available for Side Projects
 
-<!-- Hours per week you realistically have for a side business -->
+I work from 8-5 so any time after that will work
 
 ## Capital Available to Start
 
-<!-- Budget you could invest in a business idea -->
+USD it will depend as I don't want to spend everything at once in one project, but I would say $5-10k
