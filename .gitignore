@@ -1,0 +1,10 @@
+# Keep finances private if sensitive — uncomment to exclude from git
+# ai/persona/finances.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
