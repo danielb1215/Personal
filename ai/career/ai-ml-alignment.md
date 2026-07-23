@@ -318,6 +318,65 @@ is *packaging and proof*, not fundamentals.
 
 ---
 
+## Compensation: what a LATAM-remote move pays
+
+US salary figures ($145k–$310k) do **not** transfer directly. LATAM-remote roles pay a
+discount vs. US onshore but a premium vs. local market — and **who pays you matters more
+than the title** (a direct US startup vs. a nearshore staffing agency is a ~2× spread on
+the same skills). Benchmarked against the current ~$4,600/mo (~$55k/yr):
+
+| Scenario | Monthly (USD) | Annual | vs. $4,600 now |
+|----------|---------------|--------|----------------|
+| **Repricing only** — well-paying US-remote role, modest AI premium | $5,500–$6,500 | $66–78k | +$900 to +$1,900/mo |
+| **Realistic target** — Applied AI / AI Data Engineer, 1st AI role after portfolio | $6,000–$8,000 | $72–96k | +$1,400 to +$3,400/mo |
+| **Stretch** — senior w/ *shipped production* RAG/agents at a US startup on near-US bands | $8,000–$10,000+ | $96–120k+ | +$3,400 to +$5,400/mo |
+
+Grounding: senior AI engineers in Colombia reach ~$91k/yr (~$7,600/mo); remote LATAM AI
+engineers average ~$112k/yr; senior Brazilian/Argentine engineers on *partial US bands*
+regularly clear $120k. The AI premium over equivalent data-engineering comp is real but
+compressed in LATAM (~+15–35%, vs. the ~$25k floor premium seen onshore in the US).
+
+## Path to $8k+/month
+
+$8k/mo (~$96k/yr) is the **"senior engineer with *shipped-in-production* RAG/agents, hired
+*directly* by a US company on near-US bands"** tier. It is realistic — but it's a 9–18 month
+build, not a job hop. Three gates, in order of leverage:
+
+1. **Proof of *production* AI work, not a portfolio.** The biggest pay jump is between
+   "I built a RAG demo" ($6k tier) and "I own an AI system in production, with evals and
+   monitoring, that a business depends on" ($8k+ tier). Portfolio → interview; production
+   track record → the number.
+2. **Direct US employer, not a nearshore agency.** Same skills, ~2× spread. Point the whole
+   job search at direct-hire US startups (Wellfound/AngelList, YC boards, startup.jobs),
+   not staffing intermediaries.
+3. **Specialize into the premium niche** — agentic systems + LLMOps are the scarcest,
+   highest-paid corner and where the $90–120k LATAM senior offers sit.
+
+### Timeline
+
+| Phase | Window | What happens | Likely pay |
+|-------|--------|--------------|------------|
+| **0 — Level up** | Months 0–3 | Ship the portfolio project (RAG + text-to-SQL agent + evals + monitoring on BigQuery); reposition résumé/LinkedIn as *AI Data / Applied AI Engineer*. | $4,600 (current job) |
+| **1 — First AI role** | Months 3–9 | Land first AI-titled role at a direct US company, or pivot into the AI role at Crowd Cow. | $6,000–$8,000 |
+| **2 — Production track record** | Months 9–18 | Ship real production AI systems; specialize in agents/LLMOps; build public signal. | $8,000–$10,000+ |
+
+- **Fast path (6–9 mo):** you already use Claude Code, MCP, OpenAI API, and prompt
+  engineering daily — compress Phase 0 and land a direct US-startup / forward-deployed role
+  early. Your production data-engineering rigor is the "rare blend" these roles can't fill.
+- **Slow path (18–24 mo):** staying with nearshore agencies, or lacking production AI work,
+  stalls you around $5–6k regardless of skill.
+
+### Three routes to $8k
+1. **Job switch** — highest ceiling, most reliable route to $8k+.
+2. **Forward-deployed / independent AI consulting** — fastest, least stable; day-rate work
+   can reach $8k+/mo equivalent quickly *and* validates the side-business mission.
+3. **Internal pivot at Crowd Cow** — lowest risk, likely tops out $6–7k, good stepping stone.
+
+**Bottom line:** with a 10–15 h/week budget, $8k+/mo is achievable in ~9–15 months of focused
+effort — realistically doubling current pay inside ~2 years. Cash cost is small (~$200–500 in
+API/hosting); the real investment is ~150–250 focused hours. The gating factor is *shipped
+production AI work at a real company* — exactly what Phase 0→1 manufactures.
+
 ## Sources
 
 - [Machine Learning Engineer Job Outlook 2026 — 365 Data Science](https://365datascience.com/career-advice/machine-learning-engineer-job-outlook/)
@@ -334,3 +393,7 @@ is *packaging and proof*, not fundamentals.
 - [Forward Deployed AI Engineer (Remote LATAM) — Puente Talent Partners via Get on Board](https://www.getonbrd.com/jobs/machine-learning-ai/forward-deployed-ai-engineer-puente-talent-partners-remote)
 - [Forward Deployed Engineer — Truelogic (Latin America Remote)](https://www.remoterocketship.com/company/truelogic-software/jobs/forward-deployed-engineer-technology-latin-america-remote/)
 - [Top LATAM Countries to Hire AI Talent in 2026 — Hireslink](https://www.hireslink.com/blog/top-latam-countries-to-hire-ai-talent-in-2026)
+- [AI Engineer Salaries 2026: US vs Europe vs Latin America — Remotely Talents](https://www.remotelytalents.com/blog/ai-engineer-salaries-2026-us-vs-europe-vs-latin-america)
+- [How Much Does It Cost to Hire an AI Engineer in Latin America — South](https://www.hireinsouth.com/post/how-much-does-it-cost-to-hire-an-ai-engineer-in-latin-america)
+- [Nearshore AI Engineer Cost: 2026 US vs LATAM — Next Idea Tech](https://blog.nextideatech.com/nearshore-ai-engineer-cost-2026/)
+- [Data Roles Salary Guide: US vs. Latin America — hirewithnear](https://www.hirewithnear.com/blog/data-roles-salary-guide-us-vs-latin-america)
