@@ -3,6 +3,15 @@
 **Date:** 2026-08-27 · **Revised:** 2026-08-27 (rev. 2) · **For:** Daniel Bolivar
 **Status:** Recommendation
 
+> **Revision 4 reverses rev. 2 and reinstates Interactive Brokers.** Daniel pushed
+> back: if the 30% is refunded, isn't SGOV at IBKR simply the best option? It is —
+> that was never in dispute. Rev. 2 weighed the $91.80/yr gap against setup friction
+> and called it not worth it. That reasoning was too anchored on today's balance. See
+> §3.2 for what changed: the refund is automatic and in-account (verified), the gap
+> scales with a portfolio growing $2,100/month, and **IBKR is the only realistic venue
+> for the Irish-domiciled UCITS funds that solve the US estate-tax and dividend-
+> withholding problems flagged in §4c.**
+>
 > **Revision 3 corrects a comparison error in rev. 2.** Rev. 2 claimed SGOV at eToro
 > nets 2.52% and is therefore "worse than Wallbit" — that compared a post-*US*-tax
 > figure against a pre-*Colombian*-tax figure. Once Art. 254 ET's foreign tax credit
@@ -243,66 +252,80 @@ Effective yield  = $220.35 / $32,000          = 0.6886%
 **0.69%.** Worse than Wallbit at any of its quoted rates. Do not hold cash as cash
 at IBKR.
 
-### 3.2 SGOV — and why it is no longer worth a new account
+### 3.2 SGOV at IBKR — the recommended home for the yield bucket
 
 SGOV is a security, not a cash balance, so neither the $10,000 exclusion nor the NAV
-scaling in §3.1 applies to it. That part of rev. 1 holds. What changed is the size of
-the prize.
+scaling in §3.1 applies to it.
 
 | | 30-day SEC yield | US withholding | Net | Friction |
 |---|---|---|---|---|
-| **Wallbit remunerated** | 2.85% | **0%, permanently** | **2.85%** | none — account open |
-| SGOV at IBKR | 3.60% | 30%, refunded on reclassification | ~3.60%, with a lag | new account, W-8BEN |
-| SGOV at eToro | 3.60% | 30%; reclassification unconfirmed | **2.52% – 3.60%** | account open |
+| Wallbit remunerated | 2.85% | 0%, permanently | 2.85% | none — account open |
+| **SGOV at IBKR** | **3.60%** | 30%, auto-refunded Jan–Mar | **~3.60%** | new account, W-8BEN |
+| SGOV at eToro | 3.60% | 30%; reclassification unconfirmed | 2.52%–3.60% | account open |
 
 ```
-On $17,000:
-  Wallbit  @ 2.85%              = $484.50 / yr
-  SGOV     @ 3.60% (QII works)  = $612.00 / yr   →  +$127.50
-  SGOV     @ 2.52% (QII fails)  = $428.40 / yr   →  − $56.10
-
-After Colombian tax at 28%, the upside is  $127.50 × 0.72 = $91.80 / yr
-                                                          = $7.65 / month
+On $17,000, after Colombian tax at 28%:
+  SGOV at IBKR   $612.00 × 0.72  =  $440.64
+  Wallbit        $484.50 × 0.72  =  $348.84
+                                    ────────
+  Difference                        $ 91.80 / yr  =  $7.65 / month
 ```
 
-**$7.65/month is not worth opening a brokerage account, filing a W-8BEN, and waiting
-a year to reclaim withheld tax.** Rev. 1 recommended IBKR because it priced Wallbit
-at an unverified rate with unknown withholding treatment. With 2.85% clean and
-confirmed, that recommendation doesn't survive.
+Rev. 2 called $7.65/month too small to justify opening an account. **That was the
+wrong frame.** Three corrections:
+
+#### The refund is automatic and in-account — verified
+
+IBKR reclassifies prior-year distributions **between January and March**, credits the
+account, and reports it in the Year-to-Date Activity Statement and Dividend Report.
+**No Form 1040-NR, no claim to file, nothing to chase.**
+
+Cash-flow cost of the lag:
+```
+$183.60 withheld, held ~9 months on average
+$183.60 × 0.0285 × 9/12  =  $3.92 / yr     — negligible
+```
+
+**One real caveat:** once IBKR files the 1042-S in March, they can no longer refund —
+recovery would then require a 1040-NR you file yourself, not worth it at these
+amounts. For SGOV, a large iShares fund publishing QII annually, the reclassification
+is routine. It is a dependency, not a guarantee.
+
+#### The gap scales with the balance
+
+$7.65/month is today's figure against a $2,100/month savings rate:
+```
+At $50,000 in cash-equivalents:  $50,000 × 0.75% × 0.72  =  $270 / yr
+```
+The account is a one-time cost. The benefit compounds.
+
+#### IBKR is where the UCITS funds are — the real argument
+
+IBKR offers Irish-domiciled UCITS ETFs to Latin American residents and has the widest
+UCITS selection of any retail broker. eToro almost certainly does not.
+
+That matters because of §4c: your US-situs assets cross the **$60,000 US estate-tax
+threshold** within about two years at your savings rate, and you pay **30% on US
+dividends** with no treaty. **VWRA** fixes both — not US-situs, 15% at fund level under
+the US–Ireland treaty, and *accumulating*, so it distributes nothing and defers the
+Colombian tax too.
+
+**If IBKR is open anyway, bucket (c) belongs there as VWRA** rather than VT at eToro —
+starting in the right structure instead of migrating out of the wrong one later.
 
 #### Why IBKR rather than eToro — the question, answered
 
-SGOV **is** available on eToro, at $0 commission on real ETF trades, and you're
-already in USD so no conversion fee applies. So eToro can technically do it. The
-distinction that mattered was never commission — it's **withholding handling**:
+SGOV **is** available on eToro at $0 commission, so eToro can technically do it. The
+distinction is withholding handling:
 
-- **IBKR** documents the reclassification cycle: withhold 30% at payment, adjust once
-  iShares publishes final QII classification. You get the money back.
-- **eToro's** published tax guidance says a W-8BEN *"reduces the withholding tax from
-  30% to 15%."* That's **treaty** language, and **Colombia has no tax treaty with the
-  US** — so you'd get 30%, not 15%. Nothing in their guidance mentions QII
-  reclassification for bond ETFs.
+- **IBKR** runs the reclassification cycle above, automatically.
+- **eToro's** published guidance cites the 15% *treaty* rate — and Colombia has no US
+  treaty, so you'd get 30% — with no mention of QII reclassification for bond ETFs.
 
-If eToro doesn't reclassify, SGOV there is withheld at 30% permanently — but **that
-is not the same as losing it.** Art. 254 ET credits foreign tax paid against your
-Colombian liability on the same income, so most of the 30% is recovered on the
-Colombian side. Worked in full in §6.2; the short version:
-
-| | US | Colombia | Total | Net on $17,000 |
-|---|---|---|---|---|
-| Wallbit | 0% | 28% | **28%** | $348.84 |
-| SGOV at IBKR | 0% (after refund) | 28% | **28%** | $440.64 |
-| SGOV at eToro, credit claimed | 30% | 0% | **30%** | $428.40 |
-| SGOV at eToro, **no credit** | 30% | 28% | **58%** | $257.04 |
-
-So the honest answer to "why IBKR and not eToro" is: *IBKR is cleaner because the
-withholding is refunded rather than credited, but eToro is only ~2 points behind —
-and neither gap is worth much now that Wallbit is 2.85% clean.* **The row that
-actually matters is the last one:** if your contador doesn't file the Art. 254
-credit, SGOV at eToro is a disaster and Wallbit wins by a mile.
-
-eToro remains the right venue for **equities** (§4c), where this distinction doesn't
-arise — a stock dividend is withheld at 30% for a Colombian resident at any US broker.
+If eToro doesn't reclassify, Art. 254 ET recovers most of it on the Colombian side
+(§6.4), so it isn't a disaster — but it depends on your contador filing the credit,
+and it's 2 points worse than IBKR even when it works. **IBKR is the cleaner venue and
+now the recommended one.**
 
 ### 3.3 Direct T-bills
 
@@ -438,37 +461,39 @@ Sizing logic is unchanged from rev. 1:
 - **Long-term $10,000** — the remainder. You're 27, 3+ year horizon, moderate risk,
   $2,100/mo refilling the tank.
 
-What changed is *where* the cash goes: **one account instead of three.**
-
 | Bucket | Amount | % | Where | Rate |
 |---|---:|---:|---|---|
 | **(a) Instant-access** | $5,000 | 15.6% | Wallbit remunerated | 2.85% |
-| **(b) Yield-bearing cash** | $17,000 | 53.1% | Wallbit remunerated | 2.85% |
-| **(c) Invested** | $10,000 | 31.3% | eToro — broad global index | equity |
+| **(b) Yield-bearing cash** | $17,000 | 53.1% | **SGOV at IBKR** | 3.60% |
+| **(c) Invested** | $10,000 | 31.3% | **VWRA at IBKR**, staged | equity |
 | **Total** | **$32,000** | **100%** | | |
 
 ```
-Cash yield:  $22,000 × 0.0285  =  $627.00 / yr  =  $52.25 / month
-                                  ── clean; nothing withheld, nothing to reclaim
+Cash yield:   $5,000 × 0.0285  =  $142.50
+             $17,000 × 0.0360  =  $612.00
+                                  ───────
+                                  $754.50 / yr   vs $627.00 all-Wallbit
+                                                 vs $  0.00 today
 ```
 
-(a) and (b) sit in the same product. The distinction is a mental one, not an
-operational one — $5,000 you'd touch this quarter, $17,000 you wouldn't. Wallbit
-moves between remunerated and checking instantly, so there's no reason to split them
-across accounts.
+Keep $5,000 at Wallbit: SGOV settles T+1 and then needs a withdrawal, so you still
+want something instant. Everything else moves to IBKR.
 
-### Why not chase the last 75 basis points
+### Why the last 75 basis points are worth chasing after all
 
-Rev. 1 routed $17,000 to SGOV at IBKR for 3.60%. Per §3.2 that's worth **$7.65/month
-after Colombian tax**, requires a new account, and carries a withholding-refund lag
-of up to a year. Against a confirmed, clean, already-open 2.85% — no.
+Rev. 2 routed everything to Wallbit on the grounds that $7.65/month didn't justify a
+new account. §3.2 sets out why that was the wrong frame: the refund is automatic, the
+gap scales with a balance growing $2,100/month, and IBKR is the only realistic venue
+for the UCITS funds that fix the estate-tax and dividend-withholding problems below.
 
-**The one real argument for splitting is not yield, it's concentration.** $22,000
-behind a single fintech intermediary is the risk §2.3 describes, and FDIC coverage
-addresses bank failure but not Wallbit's own operational or records failure. If that
-keeps you up at night, the fix is moving $8,000–10,000 into SGOV — and at that point
-IBKR is the venue, not eToro, for the reclassification reason in §3.2. Treat it as
-an optional upgrade, not part of the plan.
+The concentration argument now cuts the same way. Rev. 2 flagged $22,000 behind a
+single fintech intermediary as the residual risk in §2.3. Splitting across Wallbit and
+IBKR addresses it as a side effect rather than as a deliberate cost.
+
+**What you give up by moving $17,000 out of Wallbit:** instant liquidity on that
+tranche (T+1 plus withdrawal instead of instant), and a dependency on IBKR's Jan–March
+reclassification. Bucket (a) covers the same-day case; the reclassification is routine
+for SGOV. Both are acceptable.
 
 ### (c) The $10,000 — what it is and why
 
@@ -477,10 +502,14 @@ an optional upgrade, not part of the plan.
 Fair — rev. 1 assumed too much. Plainly:
 
 **What you'd buy.** One fund, one ticker, that owns a slice of thousands of public
-companies worldwide. **VT** (Vanguard Total World Stock) holds roughly 9,000
-companies across the US, Europe, Japan and emerging markets. Buying it once gives you
-the whole global stock market. It's available on eToro at $0 commission, and you're
-already in USD so there's no conversion fee.
+companies worldwide. **VWRA** (Vanguard FTSE All-World UCITS, Irish-domiciled, USD,
+accumulating — ISIN IE00BK5BQT80) holds roughly 3,600 companies across the US, Europe,
+Japan and emerging markets. Buying it once gives you the whole global stock market.
+
+**Why VWRA rather than VT.** Rev. 2 recommended VT at eToro because IBKR wasn't in the
+plan. With IBKR open, VWRA is available and is the better structure from day one — see
+"Worth knowing" below. VT remains a perfectly good fallback if VWRA turns out to be
+unavailable to your account.
 
 **Why not leave it in cash.** This is the $10,000 you said you won't need for 3+
 years. In Wallbit it earns 2.85%, which after Colombian tax at 28% is about 2.05% —
@@ -532,35 +561,52 @@ Two US tax facts that don't bite yet but will:
 - **Dividend withholding.** As a Colombian resident with no US tax treaty, you pay
   **30%** on US dividends. An investor in a treaty country pays 15%.
 
-**Irish-domiciled UCITS ETFs** — the global equivalent is **VWRA** (or VWCE in EUR) —
-fix both: the fund pays 15% at the fund level under the US–Ireland treaty instead of
-30% to you, and the shares aren't US-situs, so the estate-tax exposure disappears.
-Whether eToro offers VWRA to your account I could not verify — check before assuming.
-VT on eToro is perfectly fine at your current size; VWRA is the better structure to
-migrate toward as the portfolio grows past $60,000.
+**Irish-domiciled UCITS ETFs fix both.** **VWRA** pays 15% at fund level under the
+US–Ireland treaty instead of 30% to you, and the shares aren't US-situs, so the
+estate-tax exposure disappears. It is also **accumulating** — it distributes nothing,
+so there is no annual dividend to be taxed in Colombia either, and the return
+compounds inside the fund until you sell.
+
+IBKR offers Irish UCITS ETFs to Latin American residents and has the widest UCITS
+selection of any retail broker. **This is the strongest single argument for opening
+the account**, and it is why bucket (c) moved off eToro in rev. 4.
+
+**One thing to confirm first:** how Colombia treats an accumulating fund. Colombia has
+no PFIC-style regime, so an accumulating ETF should simply defer everything to disposal
+— but I have not verified this and would not assume it. **Ask your contador before
+choosing VWRA over VT.**
 
 ## 5. Mechanics
 
-Two transfers and one purchase. No new accounts, no FX conversion.
+One new account, three transfers, two purchases.
 
 | # | Move | Route | Cost | Time |
 |---|---|---|---:|---|
-| 1 | Rippling $14,000 → Wallbit | ACH | **$0** | 1–2 bd |
-| 2 | Payoneer $15,000 → Wallbit | ACH, USD→USD | **$1.50** | 1–2 bd |
-| 3 | Wise $3,000 → Wallbit | ACH, USD→USD | ~$0 | 1–2 bd |
-| 4 | Confirm $22,000 sits in *remunerated*, not checking | in-app | $0 | instant |
-| 5 | Move $10,000 → eToro | ACH / card | $0 | 1–3 bd |
-| 6 | Buy VT × $2,000, monthly × 5 | eToro | $0 commission | same day |
-| | **Total one-time cost** | | **~$1.50** | |
+| 1 | **Open IBKR account**, file W-8BEN | Passport + proof of address | $0 | 2–5 d |
+| 2 | Rippling $14,000 → Wallbit | ACH | **$0** | 1–2 bd |
+| 3 | Payoneer $15,000 → Wallbit | ACH, USD→USD | **$1.50** | 1–2 bd |
+| 4 | Wise $3,000 → Wallbit | ACH, USD→USD | ~$0 | 1–2 bd |
+| 5 | Confirm $5,000 sits in *remunerated*, not checking | in-app | $0 | instant |
+| 6 | $27,000 → IBKR | ACH from Wallbit | $0 | 1–3 bd |
+| 7 | Buy SGOV × $17,000 | IBKR | ~$1 | same day |
+| 8 | Buy VWRA × $2,000, monthly × 5 | IBKR | ~$1 each | same day |
+| | **Total one-time cost** | | **~$8** | |
 
-**~$1.50 to unlock $627/year.** Rev. 1's route cost $15–65 because of the FX
-conversion and the IBKR leg; both are gone.
+**~$8 to unlock $754.50/year.** Payback in under a week.
 
-Step 2 caveat: Payoneer withdrawals go to an account **in your own name**. Wallbit's
-US account details are in your name, so this should pass — but test with $100 first.
+Step 1 gates everything else — start it today; approval takes a few days and nothing
+below can happen until it clears. **File the W-8BEN during onboarding**; IBKR prompts
+for it. It won't reduce your 30% rate (no Colombia–US treaty) but without it the broker
+must presume US status and apply 24% backup withholding on gross sale proceeds.
 
-Step 4 is the one that's easy to skip and is the whole point: money sitting in Wallbit
-*checking* earns nothing. The 2.85% is on the remunerated balance.
+Step 3 caveat: Payoneer withdrawals go to an account **in your own name**. Wallbit's US
+details are in your name, so this should pass — test with $100 first.
+
+Step 5 is the one that's easy to skip and is the whole point of bucket (a): money in
+Wallbit *checking* earns nothing. The 2.85% is on the **remunerated** balance.
+
+Step 6: route through Wallbit rather than sending Payoneer → IBKR directly. Wallbit's
+ACH out is free and avoids Payoneer's name-matching on a third-party brokerage.
 
 ### Fees and FX
 
@@ -570,11 +616,12 @@ Step 4 is the one that's easy to skip and is the whole point: money sitting in W
 | Payoneer → USD (same currency) | **$1.50** flat | Under $50k/mo; 0.5% above |
 | Payoneer → COP | ~2%, up to 3.5% | **Avoid** — $300 on $15,000 |
 | Wallbit → Bancolombia (COP) | ~$0.35 + spread | Your existing route; minutes |
-| eToro USD deposit | $0 | No conversion fee — you're already USD |
-| eToro withdrawal | $5 flat | $30 minimum |
+| Wallbit → IBKR (ACH) | $0 | |
+| IBKR ACH deposit | $0 | First per month free |
+| IBKR trade commission | ~$1 | Tiered/fixed minimum |
 
-**There is no FX conversion anywhere in this plan.** That was rev. 1's only one, and
-dropping the COP leg removed it.
+**There is no FX conversion anywhere in this plan.** The peso leg was the only one, and
+dropping it removed it.
 
 ## 6. How the yield is taxed
 
@@ -773,18 +820,26 @@ Two caveats that keep this from being a slam dunk:
 
 #### What this changes
 
-The headline recommendation stands: **$7.65/month is not worth opening IBKR.**
+Nothing about the recommendation — **§3.2 routes bucket (b) to SGOV at IBKR, where the
+30% is refunded and no Art. 254 claim is needed at all.** The tax path is clean:
 
-What changes is that **SGOV at eToro is a legitimate option rev. 2 dismissed too
-fast** — the account is already open, commission is $0, and it's worth roughly
-**$80–92/yr** more than Wallbit. Against that: T+1 settlement instead of instant
-liquidity, a $5 eToro withdrawal fee, and a hard dependency on the Art. 254 filing.
+```
+SGOV at IBKR:  0% US (refunded Jan–Mar)  +  28% Colombia  =  28% total
+```
 
-**Proportionate suggestion.** Keep bucket (a) and the emergency tier in Wallbit, where
-liquidity is instant and nothing depends on a tax filing. If you want the extra ~$80,
-put the **$7,000 of business capital** in SGOV at eToro — that money has no same-day
-requirement. Confirm your contador handles Art. 254 first. Without that, stay entirely
-in Wallbit.
+The Art. 254 analysis above matters in two situations:
+
+1. **If IBKR doesn't approve your account.** Then SGOV at eToro becomes the fallback,
+   and the credit is what makes it viable — worth ~$80/yr over Wallbit *if claimed*,
+   and worth −$92/yr if not. Confirm your contador files Art. 254 before taking that
+   route; without it, stay entirely in Wallbit.
+2. **On your equity dividends**, where the 30% is permanent rather than refunded.
+   VWRA sidesteps this by holding US shares at fund level under the US–Ireland treaty
+   (15%) and distributing nothing — but if you hold VT instead, the 30% withheld on
+   its dividends is creditable in Colombia under Art. 254 the same way.
+
+**Either way, ask your contador whether they file Art. 254.** It is worth real money on
+the fallback path and on any US-domiciled fund you hold.
 
 ### 6.5 Formulario 160 — you are probably already required to file
 
@@ -821,48 +876,35 @@ resolving it.**
 
 ---
 
-## 7. The optional upgrade, and the standing rule
+## 7. The standing rule
 
-### The optional upgrade
-
-Rev. 1's fallback ("if you don't want to open IBKR") is now the main plan, so what
-was the main plan becomes optional. Take it only if the §2.3 concentration risk
-bothers you — not for the yield.
-
-```
-Move $8,000–10,000 of bucket (b) into SGOV at IBKR.
-
-Yield gain on $9,000:   $9,000 × (0.0360 − 0.0285) = $67.50 / yr gross
-                                       × 0.72 tax  = $48.60 / yr net
-                                                   = $4.05 / month
-```
-
-$4/month is not the reason to do it. The reason would be that $22,000 behind one
-fintech intermediary is more than you want, and FDIC covers bank failure but not
-Wallbit's own operational or records failure. That's a legitimate call either way.
-If you do it, IBKR — not eToro — for the reclassification reason in §3.2.
-
-### The standing rule (do this one)
-
-Your **$2,100/month surplus** means this whole exercise repeats itself every fifteen
+Your **$2,100/month surplus** means this entire exercise repeats itself every fifteen
 months unless you automate it. The problem you solved today is a process gap, not an
 allocation gap.
 
-Set a payday rule, once:
+### Set it once
 
-1. Rippling → Wallbit (already automatic, $0)
-2. Spending money → Wallbit checking; convert to COP at Bancolombia as needed
-3. **Everything else → Wallbit remunerated, same day**
-4. Monthly: $500–1,000 → eToro, into VT
+1. Rippling → Wallbit — already automatic, $0.
+2. Spending money → Wallbit checking; convert to COP at Bancolombia as needed.
+3. Keep bucket (a) topped up at ~$5,000 in Wallbit **remunerated**.
+4. **Everything above that → IBKR, monthly.** Split it: SGOV while you're still
+   building the cash buffer, VWRA once the buffer is full.
 
-Step 3 is the one that matters. Idle cash is a default, not a decision — the only
-durable fix is making "earning" the default state instead.
+Step 4 is the one that matters. Idle cash is a default, not a decision — the only
+durable fix is making *earning* the default state instead.
 
 ### And the $2,809.55 at eToro
 
 Still idle, still outside the $32,000. Check your Club tier's actual interest rate in
 the app; if it's under 2.85% — likely, since the 3.55% headline is quoted for EU/UK
-clients — either fold it into the VT purchases or move it to Wallbit.
+clients — move it to IBKR along with everything else.
+
+**On eToro generally:** once IBKR is open, there's a reasonable case for consolidating
+the existing $10,800 of positions there too — real share ownership, cheaper execution,
+UCITS access, and one fewer platform. **Don't rush it**: selling to transfer would
+realise gains and trigger the Colombian capital-gains timing question in §6.3. Check
+each position's holding period first, or ask IBKR about an in-kind transfer (ACATS
+doesn't apply to eToro, but they may support a manual transfer).
 
 ## 8. Assumptions
 
@@ -898,10 +940,13 @@ US withholding treatment (§871(i)(2)(A), exempt).
 
 Rev. 1 listed ten. Six are resolved. What's left:
 
-1. **Whether VT is available on your eToro account** — and if you want the better
-   long-run structure, whether **VWRA** (Irish-domiciled) is. Check both in-app.
-2. **Whether Payoneer will send to Wallbit's US account details.** Should pass —
-   same name — but test with $100.
+1. **Whether IBKR approves your account.** Everything else depends on it. Start the
+   application first.
+2. **Whether VWRA is available to your IBKR account** once open. VT is the fallback.
+3. **How Colombia treats an accumulating fund** like VWRA — ask your contador before
+   choosing it over VT.
+4. **Whether Payoneer will send to Wallbit's US account details.** Should pass — same
+   name — but test with $100.
 3. **Your eToro Club tier's actual cash interest rate**, for the $2,809.55 already
    sitting there. The 3.55% headline is quoted for EU/UK.
 4. **Your actual marginal Colombian rate**, and how your contador treats foreign
