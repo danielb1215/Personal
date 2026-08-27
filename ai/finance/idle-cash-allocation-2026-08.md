@@ -636,7 +636,82 @@ you taken the peso leg, part of that interest would have qualified — one more 
 dropping it gave up, though the 2026 reform bill proposes eliminating the relief from
 tax year 2027 anyway.
 
-### 6.2 The US side — and why the 28% cancels out of the comparison
+### 6.2 The US side — what it is, and what it is not
+
+**It is a withholding, not a filing obligation.** You never file a US tax return,
+never send money to the IRS, never interact with them. The broker deducts it before
+the money reaches your account. It is automatic and invisible.
+
+**It applies to dividends and interest only — not to capital gains.** A non-resident
+alien present in the US fewer than 183 days in the year is **not subject to US tax on
+capital gains from US stocks, bonds or funds** (IRC §871(a)(2); withholding does not
+reach gains). Your **+$4,902.31 unrealized gain owes the IRS nothing**, now or on
+sale.
+
+#### What you are actually paying on eToro today
+
+| Holding | Value | Div. yield | Dividends/yr | 30% withheld |
+|---|---:|---:|---:|---:|
+| NVDA | $2,903.42 | 0.48% | $13.94 | $4.18 |
+| VOO | $1,592.51 | 1.04% | $16.56 | $4.97 |
+| QQQ | $1,705.58 | 0.42% | $7.16 | $2.15 |
+| GOOG | $2,279.91 | 0.25% | $5.70 | $1.71 |
+| AAPL | $1,594.61 | 0.35% | $5.58 | $1.67 |
+| AMZN + TSLA | $724.44 | — | $0.00 | $0.00 |
+| **Total** | | | **$48.94** | **$14.68** |
+
+**$14.68 per year — about $1.22 per month.** The portfolio is tech-heavy, and tech
+pays almost nothing in dividends, so a 30% rate lands on a very small base. Adding
+$10,000 of VT (1.55% yield → $155/yr) takes the total to roughly **$61/yr**.
+
+*Yields as of Aug 2026. AMZN and TSLA shown at zero — verify AMZN, whose policy I
+could not confirm for 2026.*
+
+#### The same mechanism at IBKR — but it comes back
+
+SGOV distributions have the same 30% deducted at payment. The difference is that they
+are *interest*, so once iShares publishes the QII classification, IBKR reclassifies and
+refunds. **Net US tax $0**, with up to a year's lag. That is the entire distinction
+behind §3.2.
+
+#### The W-8BEN — check it is on file
+
+It does **not** lower your rate: Colombia has no US treaty, so you stay at 30%
+regardless. What it does is certify that you are **not** a US person. Without a valid
+one, the broker is legally required to presume US status and apply **24% backup
+withholding on gross sale proceeds** — the whole sale amount, not the gain. Selling
+$10,000 of NVDA would have $2,400 taken.
+
+eToro presents the form the first time you buy a US stock, so you have almost
+certainly signed it. Confirm it exists and your NIT is entered.
+
+### 6.3 Capital gains — where your real liability sits
+
+The US ignores your gains. **Colombia does not**, and the rate turns entirely on
+holding period:
+
+| Holding period | Treatment | Rate |
+|---|---|---|
+| **≥ 2 years** | Ganancia ocasional (Art. 314 ET) | **15%** |
+| **< 2 years** | Ordinary income, cédula general | **28%** (your marginal) |
+
+```
+On the current $4,902.31 unrealized gain:
+  Held ≥ 2 years:  $4,902.31 × 0.15  =  $  735.35
+  Held < 2 years:  $4,902.31 × 0.28  =  $1,372.65
+                                        ─────────
+  Difference                             $  637.30
+```
+
+**$637 decided purely by when you sell** — and more than the entire US withholding bill
+several times over. NVDA's $108.89 average cost against $225.44 today suggests some
+positions are already past the two-year mark. **Check open dates per position before
+selling anything.**
+
+This also argues for the staged VT purchases in §4c starting their own two-year clocks
+now rather than later.
+
+### 6.4 Why the 28% cancels out of the IBKR comparison
 
 Because the Colombian 28% applies to **both** options, it shrinks the gap between
 them by 28% rather than favouring either:
@@ -711,7 +786,7 @@ put the **$7,000 of business capital** in SGOV at eToro — that money has no sa
 requirement. Confirm your contador handles Art. 254 first. Without that, stay entirely
 in Wallbit.
 
-### 6.3 Formulario 160 — you are probably already required to file
+### 6.5 Formulario 160 — you are probably already required to file
 
 Unchanged, unaffected by any of these decisions, and the most time-sensitive item in
 this document.
@@ -735,7 +810,7 @@ plan. Penalties for late filing are significant. **Ask your contador whether you
 for 2026, and for prior years.** Individual assets above 3,580 UVT (COP 187,498,920)
 must be itemised — you're below that per account.
 
-### 6.4 Cuenta de compensación
+### 6.6 Cuenta de compensación
 
 Foreign accounts used to channel mandatory-channeling FX operations must be registered
 with Banco de la República within a month of opening, and generate monthly reporting to
@@ -831,12 +906,15 @@ Rev. 1 listed ten. Six are resolved. What's left:
    sitting there. The 3.55% headline is quoted for EU/UK.
 4. **Your actual marginal Colombian rate**, and how your contador treats foreign
    interest in the cédula general.
-5. **Whether your contador files the Art. 254 ET foreign tax credit.** This is the
+5. **The open date on each eToro position**, to know which have crossed the two-year
+   ganancia ocasional line (§6.3). Worth $637 on the current gain.
+6. **That your W-8BEN is on file at eToro with your NIT entered** (§6.2).
+7. **Whether your contador files the Art. 254 ET foreign tax credit.** This is the
    gate on the SGOV-at-eToro option in §6.2 — without it that option goes from
    best-available to worst-available.
-6. **Whether you have a Formulario 160 obligation for 2026 or prior years** — see
-   §6.3. Time-sensitive and independent of everything else here.
-7. **Whether any BanRep cuenta de compensación registration applies to you.**
+8. **Whether you have a Formulario 160 obligation for 2026 or prior years** — see
+   §6.5. Time-sensitive and independent of everything else here.
+9. **Whether any BanRep cuenta de compensación registration applies to you.**
 
 **Resolved in rev. 2:** Wallbit's APY; whether the yield comes from the Alpaca FDIC
 sweep or a money market fund; whether US withholding applies to it; Wallbit's plan
