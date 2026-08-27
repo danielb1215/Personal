@@ -7,23 +7,26 @@
 
 Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearing and invested positions, capturing **$627–$912/year** in new income depending on execution timing. Plus **$2,809** available at eToro.
 
-**Total opportunity:** Move **$34,809** idle → productive.
+**Payoneer's $15,000 has no fee-free exit.** Payoneer charges a flat **2% on every bank withdrawal, to every destination and currency** (confirmed directly in-app — not a cross-currency fee, just their standing rate). That's a one-time **$300** cost. Rippling and Wise, by contrast, already have $0-fee routes out (Rippling → Wallbit direct; Wise ACH is free), so **only the Payoneer leg pays the fee — route Rippling and Wise around Payoneer, don't consolidate through it.**
+
+**Total opportunity:** Move **$34,809** idle → productive, net **$300** in unavoidable fees. **Net deployed: $31,700 + $2,809.55 eToro.**
 
 ---
 
 ## Allocation Plan
 
 ### Bucket A: Wallbit (Cash, FDIC Sweep)
-**$22,000 at 2.85% APY**
+**~$21,700 at 2.85% APY**
 
 - **Account:** Wallbit (you already have one)
 - **Product:** Standard Plan, Alpaca FDIC Bank Sweep
+- **Sourcing:** $14,000 from Rippling (direct, $0 fee, existing route) + ~$7,700 net proceeds forwarded from the Payoneer withdrawal (see Bucket B sourcing and Execution Sequence)
 - **Why:** 
   - US §871(i)(2)(A) exemption: 0% automatic withholding on FDIC deposits
   - No Colombian tax on US deposit income (tax-treaty treaty treatment)
   - Instant access if needed (true emergency liquidity)
-- **Annual yield:** $627 gross
-- **Tax impact:** $627 × 28% Colombian tax = **$175.56 net tax**. After-tax yield: **$451.44/year**
+- **Annual yield:** ~$618 gross (at $21,700)
+- **Tax impact:** $618 × 28% Colombian tax = **$173 net tax**. After-tax yield: **~$445/year**
 
 ### Bucket B: Interactive Brokers (Equities + Treasury)
 **$10,000 staged over 5 months**
@@ -49,6 +52,8 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 - Automatic withholding refund in-account (no paper chase, no foreign tax credits needed)
 - No entity-level dividend withholding (vs. eToro's 3–5% fund-level costs)
 
+**Sourcing:** $3,000 from Wise (direct, $0 fee) + $7,000 forwarded from Wallbit's free ACH-out, itself funded by the net Payoneer proceeds. This avoids a second 2% Payoneer withdrawal — the whole $15,000 Payoneer balance exits Payoneer once, then gets re-split for free from inside Wallbit.
+
 ### Bucket C: eToro (Hold for now)
 **$2,809.55 available cash**
 
@@ -60,15 +65,17 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 
 ## Execution Sequence
 
+**Key change from earlier drafts: don't route Rippling or Wise through Payoneer.** Payoneer charges a flat 2% on every withdrawal regardless of destination or currency — confirmed in-app, not a cross-currency artifact. Rippling and Wise both already have $0-fee exits, so only the Payoneer balance itself should touch that 2%, and only once.
+
 | Step | Action | Timing | Account | Amount | Notes |
 |---|---|---|---|---|---|
-| 1 | Transfer: Rippling → Payoneer | Day 1 | Rippling | $14,000 | ACH, ~1–2 business days |
-| 2 | Transfer: Payoneer → Wise | Day 4 | Payoneer | $14,000 + $15,000 = $29,000 | Consolidate into Wise (no fee) |
-| 3 | Transfer: Wise → Wallbit | Day 6 | Wise | $22,000 | ACH, ~1–2 business days. Deposit to Wallbit checking. |
-| 4 | Enable FDIC sweep | Day 8 | Wallbit | $22,000 | Sweep automatically invests idle balance into FDIC bank sweep. |
-| 5 | Transfer: Wise → IBKR | Day 6 (parallel) | Wise | $7,000 | ACH funding for IBKR brokerage account. Leave $1,000 buffer in Wise. |
-| 6 | Buy SGOV (Month 1) | Day 10 | IBKR | $2,000 | Limit order; settle T+1 automatically. |
-| 7 | Buy SGOV (Month 2–5) | Monthly | IBKR | $2,000 each | Same process, recurring. |
+| 1 | Transfer: Rippling → Wallbit | Day 1 | Rippling | $14,000 | Direct, $0 fee (existing payroll route per `ai/persona/finances.md`) |
+| 2 | Withdraw: Payoneer → Wallbit | Day 1 (parallel) | Payoneer | $15,000 gross | **2% fee = $300.** Net $14,700 arrives at Wallbit. One withdrawal only — don't split this across two Payoneer transfers, the fee is the same either way and splitting doubles the paperwork. |
+| 3 | Enable FDIC sweep | Day 4 | Wallbit | ~$28,700 (combined) | Sweep automatically invests idle balance into FDIC bank sweep while step 4 is arranged. |
+| 4 | Forward: Wallbit → IBKR | Day 5 | Wallbit | $7,000 | Free ACH out — re-splits part of the Payoneer proceeds toward the IBKR target without a second Payoneer fee. |
+| 5 | Transfer: Wise → IBKR | Day 1 (parallel) | Wise | $3,000 | ACH funding for IBKR, free. Leave remaining Wise balance as buffer. |
+| 6 | Buy SGOV (Month 1) | Day 8 | IBKR | $2,000 | Limit order; settle T+1 automatically. |
+| 7 | Buy SGOV (Month 2–5) | Monthly | IBKR | $2,000 each | Same process, recurring, from the $10,000 IBKR pool. |
 | 8 | Monitor refund | Jan–Mar 2027 | IBKR | — | US withholding refund posts to account (realized income line). |
 
 ---
@@ -77,11 +84,14 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 
 | Venue | Fee | Amount | Notes |
 |---|---|---|---|
-| Payoneer → Wise | Flat | ~$1.50 | One-time, ACH for 1099 reporting |
-| Wise → Wallbit | Flat | $0 | ACH, no fee |
+| Rippling → Wallbit | Flat | $0 | Existing free payroll route |
+| **Payoneer → Wallbit** | **2% of balance** | **$300** | Confirmed in-app: 2% applies to every destination and currency, not just cross-currency. No fee-free exit found for this balance. |
+| Wallbit → IBKR | Flat | $0 | Free ACH out, re-splits Payoneer proceeds without a second fee |
 | Wise → IBKR | Flat | $0 | ACH funding, free |
 | IBKR SGOV (50 shares × 5 months) | Per-trade | ~$1.00/trade | ~$5 total over 5 months |
-| **Total fees** | | **~$6.50** | Negligible |
+| **Total fees** | | **~$305** | Almost entirely the unavoidable Payoneer 2% |
+
+**Worth checking before accepting the $300:** (1) Payoneer's "Otras tarifas" tab for a rail not shown in the standard withdrawal view, (2) a direct call to Payoneer support asking whether the account qualifies for a lower ACH tier — some Payoneer account types get a $1.50 flat fee instead of 2%, this account currently doesn't. If neither pans out, $300 is a one-time cost against ~$450–900/year in new yield — well worth paying rather than leaving $15,000 at 0%.
 
 ---
 
@@ -94,11 +104,11 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 
 ### Colombian Tax (Resident)
 - **All foreign-source income:** Flat 28% (incluye intereses y dividendos)
-  - Wallbit: $627 × 28% = $175.56
+  - Wallbit: ~$618 × 28% = ~$173
   - IBKR SGOV: $360 × 28% = $100.80
 - **Foreign tax credit (Art. 254 ET):** You may offset US withholding paid against Colombian liability (if withholding occurs before refund; after refund, no credit is needed on the US side)
 
-**Bottom line:** After-tax yield from both sources is **~$450/year** on the full $32,000.
+**Bottom line:** After-tax yield from both sources is **~$445/year** on the ~$31,700 net deployed. The $300 Payoneer fee pays for itself in well under a year.
 
 ---
 
@@ -107,13 +117,13 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 | Account | Balance | Purpose |
 |---|---|---|
 | Rippling | $0 | (emptied) |
-| Payoneer | $0 | (emptied) |
-| Wise | $1,000 | Emergency buffer |
-| Wallbit | $22,000 | Income generation + daily spending |
-| IBKR | $7,000 (after 5 × $2,000 purchases) | Growth + diversification, staged |
+| Payoneer | $0 | (emptied, minus $300 fee paid) |
+| Wise | $0 | (emptied) |
+| Wallbit | ~$21,700 | Income generation + daily spending |
+| IBKR | $10,000 (after 5 × $2,000 purchases) | Growth + diversification, staged |
 | eToro | $2,809.55 | Fallback liquidity |
-| **Total deployed** | **$32,809.55** | |
-| **Idle cash** | **$1,000** (Wise buffer) | |
+| **Total deployed** | **~$34,509.55** | |
+| **Fee paid** | **$300** (one-time, Payoneer 2%) | |
 
 ---
 
@@ -135,13 +145,14 @@ Move **$32,000** from idle accounts (Rippling, Payoneer, Wise) into yield-bearin
 
 ## Next Steps
 
-1. **Approval:** Confirm you agree with the allocation and timing.
-2. **Day 1:** Initiate Rippling → Payoneer transfer.
-3. **Day 4:** Initiate Payoneer → Wise transfer (consolidation).
-4. **Day 6:** Split Wise into two legs:
-   - $22,000 → Wallbit (enable FDIC sweep)
-   - $7,000 → IBKR ACH funding
-5. **Day 10 onward:** Monthly SGOV purchases ($2,000 each, 5 months).
+1. **Optional, before anything else:** Call Payoneer support and ask if the account qualifies for a lower ACH withdrawal tier than the standard 2%. Low probability, costs nothing to ask.
+2. **Day 1:** Initiate two transfers in parallel:
+   - Rippling → Wallbit ($14,000, direct, $0 fee)
+   - Payoneer → Wallbit ($15,000 gross, 2% fee, $14,700 net)
+   - Wise → IBKR ($3,000, direct, $0 fee)
+3. **Day 4:** Enable Wallbit's FDIC sweep on the combined balance.
+4. **Day 5:** Forward $7,000 from Wallbit → IBKR (free ACH out) to complete the $10,000 IBKR pool.
+5. **Day 8 onward:** Monthly SGOV purchases ($2,000 each, 5 months).
 6. **Jan 2027:** Monitor IBKR for US withholding refund posting.
 
 ---
