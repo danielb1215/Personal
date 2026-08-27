@@ -3,6 +3,12 @@
 **Date:** 2026-08-27 · **Revised:** 2026-08-27 (rev. 2) · **For:** Daniel Bolivar
 **Status:** Recommendation
 
+> **Revision 3 corrects a comparison error in rev. 2.** Rev. 2 claimed SGOV at eToro
+> nets 2.52% and is therefore "worse than Wallbit" — that compared a post-*US*-tax
+> figure against a pre-*Colombian*-tax figure. Once Art. 254 ET's foreign tax credit
+> is applied, un-reclassified SGOV still beats Wallbit. See §6.2. The headline
+> recommendation is unchanged; the eToro option is better than rev. 2 said.
+>
 > **Revision 2 changed the recommendation.** Daniel confirmed Wallbit's rate from
 > the source (2.85% APY, Alpaca FDIC Bank Sweep) and pointed out that the Wallbit
 > FAQ states the sweep *"elimina la retención automática del 30%"* the IRS applies
@@ -277,9 +283,23 @@ distinction that mattered was never commission — it's **withholding handling**
   US** — so you'd get 30%, not 15%. Nothing in their guidance mentions QII
   reclassification for bond ETFs.
 
-If eToro doesn't reclassify, SGOV there yields 2.52% net — **worse than Wallbit**. So
-the honest answer to "why IBKR and not eToro" is: *for SGOV, IBKR is the better of
-the two, and neither is worth it now that Wallbit is 2.85% clean.*
+If eToro doesn't reclassify, SGOV there is withheld at 30% permanently — but **that
+is not the same as losing it.** Art. 254 ET credits foreign tax paid against your
+Colombian liability on the same income, so most of the 30% is recovered on the
+Colombian side. Worked in full in §6.2; the short version:
+
+| | US | Colombia | Total | Net on $17,000 |
+|---|---|---|---|---|
+| Wallbit | 0% | 28% | **28%** | $348.84 |
+| SGOV at IBKR | 0% (after refund) | 28% | **28%** | $440.64 |
+| SGOV at eToro, credit claimed | 30% | 0% | **30%** | $428.40 |
+| SGOV at eToro, **no credit** | 30% | 28% | **58%** | $257.04 |
+
+So the honest answer to "why IBKR and not eToro" is: *IBKR is cleaner because the
+withholding is refunded rather than credited, but eToro is only ~2 points behind —
+and neither gap is worth much now that Wallbit is 2.85% clean.* **The row that
+actually matters is the last one:** if your contador doesn't file the Art. 254
+credit, SGOV at eToro is a disaster and Wallbit wins by a mile.
 
 eToro remains the right venue for **equities** (§4c), where this distinction doesn't
 arise — a stock dividend is withheld at 30% for a Colombian resident at any US broker.
@@ -558,56 +578,147 @@ dropping the COP leg removed it.
 
 ## 6. How the yield is taxed
 
-Two separate systems. Being exempt in one does nothing for the other.
+**Two governments, two taxes, no connection between them.** This is the single point
+worth getting right, because it's easy to assume that being exempt in one country
+helps you in the other. It doesn't.
 
-### US withholding — the Wallbit route avoids it entirely
-
-Colombia has **no tax treaty with the US**. The default non-resident-alien
-withholding is 30%, and unlike a treaty-country investor you cannot reduce it to 15%
-with a W-8BEN. Where that bites depends on what you hold:
-
-| Income | US withholding for you | Basis |
+| | US withholding | Colombian income tax |
 |---|---|---|
-| **Wallbit sweep interest** | **0%, permanently** | §871(i)(2)(A) — bank deposit interest |
-| SGOV distributions | 30% at payment, reclassified later | §871(k) — QII, if the broker applies it |
-| US stock / US ETF dividends (VT, VOO) | **30%**, permanent | No treaty |
+| Wallbit sweep interest | **0%** — §871(i)(2)(A) | **28%** — fully taxable |
+| SGOV distributions | 30%, refunded at IBKR | **28%** — fully taxable |
+| US stock / ETF dividends | **30%**, permanent | **28%** — fully taxable |
 
-The cash side of this plan is clean. The equity side isn't — but that 30% applies at
-any US broker while you hold US-domiciled funds. VT yields roughly 2% in dividends,
-so on $10,000 the drag is on the order of $60/yr. That's the reason the
-Irish-domiciled UCITS note in §4 matters as the portfolio grows, not something to
-solve today.
+**Wallbit's exemption is from the American tax only.** Colombia taxes residents on
+worldwide income (Art. 9 ET); interest from a US bank is foreign-source income and
+enters *rentas de capital* in your cédula general exactly like any other. DIAN does
+not care what the IRS did.
 
-### Colombian tax on the interest
+### 6.1 The Colombian side — where 28% comes from
 
-Interest and financial yields — including foreign ones — go into **rentas de capital**
-within the **cédula general**, taxed on the Art. 241 progressive table (0%–39%, Ley
-2277 de 2022). At ~$4,600/mo (≈COP 171M/yr at 3,100), your marginal bracket is most
-likely **28%**, possibly **33%** once deductions land.
+Art. 241 ET as amended by Ley 2277 de 2022. UVT 2026 = **COP 52,374**:
+
+| Renta líquida gravable | Marginal rate | Tax in UVT | In pesos |
+|---|---|---|---|
+| 0 – 1,090 UVT | 0% | 0 | up to $57,087,660 |
+| 1,090 – 1,700 UVT | 19% | (base − 1,090) × 19% | to $89,035,800 |
+| **1,700 – 4,100 UVT** | **28%** | (base − 1,700) × 28% + 116 | **to $214,733,400** |
+| 4,100 – 8,670 UVT | 33% | (base − 4,100) × 33% + 788 | to $454,082,580 |
+| 8,670 – 18,970 UVT | 35% | (base − 8,670) × 35% + 2,296 | — |
+| 18,970 – 31,000 UVT | 37% | (base − 18,970) × 37% + 5,901 | — |
+| > 31,000 UVT | 39% | (base − 31,000) × 39% + 10,352 | — |
 
 ```
-Gross cash yield            $627.00
-  at 28% marginal:  tax     $175.56   →  net  $451.44
-  at 33% marginal:  tax     $206.91   →  net  $420.09
+Your gross:  $4,600/mo × 12 = $55,200/yr  ×  3,100  =  COP 171,120,000
+After deductions the taxable base lands inside the 1,700–4,100 UVT band
+                                                  →  28% marginal
 ```
 
-**Componente inflacionario.** Colombian residents can exclude the inflation component
-of financial yields (Arts. 38–41 ET) — but only for yields from entities supervised by
-the Superintendencia Financiera. A US bank sweep isn't one, so **your Wallbit interest
-is fully taxable in Colombia**. Budget for the full marginal rate.
+The rate is **marginal**: your salary already fills the lower brackets, so every extra
+peso of interest is taxed at the top rate you've reached — not at an average.
 
-Had you taken the COP leg, part of that interest would have qualified. That relief is
-one of the things dropping it gave up — and the 2026 reform bill proposes eliminating
-it from tax year 2027 anyway.
+**Correction to rev. 1 and 2**, which said "28%, possibly 33%": **33% is impossible
+for you.** It requires a taxable base above COP 214,733,400 ≈ $69,268, which exceeds
+your gross income. The realistic alternative is **19%**, if deductions pull the base
+below COP 89,035,800 ≈ $28,721 — a stretch at your income, but not impossible.
+**Plan on 28%.**
 
-### Formulario 160 — you are probably already required to file
+```
+On the recommended $22,000 in Wallbit:
+  Gross                       $627.00
+    at 28%:  tax $175.56   →  net  $451.44
+    at 19%:  tax $119.13   →  net  $507.87
+```
 
-Unchanged from rev. 1, unaffected by any of these decisions, and the most
-time-sensitive item in this document.
+**Componente inflacionario does not help here.** The Arts. 38–41 ET relief applies
+only to yields from entities supervised by the Superintendencia Financiera. A US bank
+sweep is not one, so your Wallbit interest is taxable on the full nominal amount. Had
+you taken the peso leg, part of that interest would have qualified — one more thing
+dropping it gave up, though the 2026 reform bill proposes eliminating the relief from
+tax year 2027 anyway.
+
+### 6.2 The US side — and why the 28% cancels out of the comparison
+
+Because the Colombian 28% applies to **both** options, it shrinks the gap between
+them by 28% rather than favouring either:
+
+```
+SGOV     $612.00 gross  → −28% →  $440.64 net
+Wallbit  $484.50 gross  → −28% →  $348.84 net
+                                  ────────
+Difference                         $91.80 / yr  ( = $127.50 × 0.72 )
+                                 = $7.65 / month
+```
+
+That is the arithmetic behind §3.2's conclusion. It is unaffected by the correction
+below.
+
+#### Art. 254 ET — the foreign tax credit, and rev. 2's error
+
+Rev. 2 said SGOV at eToro nets 2.52% and is "worse than Wallbit." **That was wrong.**
+It compared a post-US-tax figure against a pre-Colombian-tax figure.
+
+**Art. 254 ET** lets a Colombian resident credit income tax paid abroad against the
+Colombian tax on that same foreign income, **capped at the Colombian tax attributable
+to it**. Excess is neither refundable nor carried forward. So a permanent 30% US
+withholding is not a straight loss — it displaces the Colombian liability:
+
+```
+eToro worst case — 30% withheld, never reclassified
+  Gross                              $612.00
+  US tax withheld (30%)              −183.60
+  Colombian tax due (28% × 612)       171.36
+    less Art. 254 credit             −171.36    ← capped at the Colombian tax
+  Colombian tax payable                  0.00
+  Excess credit lost                    12.24    ← not carried forward
+                                     ────────
+  Net to you                         $428.40     vs Wallbit's $348.84
+```
+
+As total effective rates:
+
+| | US | Colombia | **Total** | Net on $17,000 |
+|---|---|---|---|---|
+| Wallbit | 0% | 28% | **28%** | $348.84 |
+| SGOV at IBKR | 0% (after refund) | 28% | **28%** | $440.64 |
+| SGOV at eToro, credit claimed | 30% | 0% | **30%** | $428.40 |
+| SGOV at eToro, **credit not claimed** | 30% | 28% | **58%** | $257.04 |
+
+**The real gap between Wallbit and un-reclassified SGOV is two percentage points, not
+thirty.** Rev. 2 overstated it badly.
+
+Two caveats that keep this from being a slam dunk:
+
+1. **The credit has to actually be claimed.** It needs a Form 1042-S from the broker,
+   documentation of foreign tax paid, and a contador who files Art. 254 correctly.
+   The bottom row of that table is what happens if it isn't — and it is much worse
+   than doing nothing.
+2. **A lower marginal rate makes it worse, not better.** The credit is capped at your
+   Colombian tax, so at 19% you could only credit $116.28 of the $183.60 — the other
+   $67.32 is wasted, and SGOV's edge over Wallbit falls from ~$80 to ~$36.
+
+#### What this changes
+
+The headline recommendation stands: **$7.65/month is not worth opening IBKR.**
+
+What changes is that **SGOV at eToro is a legitimate option rev. 2 dismissed too
+fast** — the account is already open, commission is $0, and it's worth roughly
+**$80–92/yr** more than Wallbit. Against that: T+1 settlement instead of instant
+liquidity, a $5 eToro withdrawal fee, and a hard dependency on the Art. 254 filing.
+
+**Proportionate suggestion.** Keep bucket (a) and the emergency tier in Wallbit, where
+liquidity is instant and nothing depends on a tax filing. If you want the extra ~$80,
+put the **$7,000 of business capital** in SGOV at eToro — that money has no same-day
+requirement. Confirm your contador handles Art. 254 first. Without that, stay entirely
+in Wallbit.
+
+### 6.3 Formulario 160 — you are probably already required to file
+
+Unchanged, unaffected by any of these decisions, and the most time-sensitive item in
+this document.
 
 Colombian residents holding foreign assets above **2,000 UVT** at January 1 must file
-the declaración de activos en el exterior. UVT 2026 = **COP 52,374**, so the threshold
-is **COP 104,748,000**.
+the declaración de activos en el exterior. At UVT 2026 = COP 52,374, the threshold is
+**COP 104,748,000**.
 
 ```
 Idle cash                       $32,000.00
@@ -624,7 +735,7 @@ plan. Penalties for late filing are significant. **Ask your contador whether you
 for 2026, and for prior years.** Individual assets above 3,580 UVT (COP 187,498,920)
 must be itemised — you're below that per account.
 
-### Cuenta de compensación
+### 6.4 Cuenta de compensación
 
 Foreign accounts used to channel mandatory-channeling FX operations must be registered
 with Banco de la República within a month of opening, and generate monthly reporting to
@@ -687,7 +798,8 @@ clients — either fold it into the VT purchases or move it to Wallbit.
 4. **The $5,000–$10,000 business capital comes out of this $32,000, not in addition
    to it. If it's separate, tell me — the allocation changes materially.** Still the
    single assumption most likely to change the answer.
-5. Your marginal Colombian income tax rate is 28%. Could be 33%.
+5. Your marginal Colombian income tax rate is 28% (§6.1). Could be 19% if
+   deductions are aggressive; 33% is arithmetically impossible at your income.
 6. Wallbit's 2.85% is variable and will move with the Fed, like every other rate
    here. It is not contractually fixed.
 7. Wallbit's FDIC pass-through works as described — i.e. their "for benefit of"
@@ -719,9 +831,12 @@ Rev. 1 listed ten. Six are resolved. What's left:
    sitting there. The 3.55% headline is quoted for EU/UK.
 4. **Your actual marginal Colombian rate**, and how your contador treats foreign
    interest in the cédula general.
-5. **Whether you have a Formulario 160 obligation for 2026 or prior years** — see
-   §6. This one is time-sensitive and independent of everything else here.
-6. **Whether any BanRep cuenta de compensación registration applies to you.**
+5. **Whether your contador files the Art. 254 ET foreign tax credit.** This is the
+   gate on the SGOV-at-eToro option in §6.2 — without it that option goes from
+   best-available to worst-available.
+6. **Whether you have a Formulario 160 obligation for 2026 or prior years** — see
+   §6.3. Time-sensitive and independent of everything else here.
+7. **Whether any BanRep cuenta de compensación registration applies to you.**
 
 **Resolved in rev. 2:** Wallbit's APY; whether the yield comes from the Alpaca FDIC
 sweep or a money market fund; whether US withholding applies to it; Wallbit's plan
