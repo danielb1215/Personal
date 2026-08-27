@@ -6,6 +6,13 @@
 - This is a significant advantage: USD income with Colombian cost of living gives strong purchasing power
 - No currency conversion friction for US clients or platforms (Stripe, Gumroad, Upwork, etc.)
 
+## Payroll & Money Flow (USD → COP)
+
+- **Paid via Rippling** (employer's payroll platform) in USD
+- Transfers from Rippling → **Wallbit** with **$0 fee**
+- From Wallbit, sends to Colombian bank account and receives in **COP**
+- End-to-end path: Rippling (USD) → Wallbit (USD, no fee) → Colombian bank account (COP)
+
 ## Legal / Tax Status
 
 - **Freelancer / independent contractor** in Colombia
