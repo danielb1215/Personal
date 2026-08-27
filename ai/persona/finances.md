@@ -26,9 +26,12 @@
 
 ## Investment Portfolio
 
-Active stock portfolio (as of July 2026) — all long positions, all profitable:
-- NVDA, GOOG, QQQ, AAPL, VOO, TSLA, AMZN
-- Total unrealized gain: ~$4,706
+Active stock portfolio on eToro (live data as of 2026-08-27) — all long positions, all profitable:
+- NVDA, GOOG, QQQ, AAPL, VOO, AMZN, TSLA
+- Plus one copy-trading position (AI agent-ZCAKBPQ, $200 invested)
+- Trading account total value: **$13,810.02**
+- Available cash: **$2,809.55**
+- Total unrealized gain: **$4,897.01**
 - Style: long-term growth, tech-heavy
 
 See `hobbies.md` for full portfolio table.
