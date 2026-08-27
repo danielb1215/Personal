@@ -45,20 +45,20 @@ Actively thinking about how to apply my data engineering skills to a side busine
 
 **Driving goal:** Achieve financial freedom that allows full-time travel and nature exploration. This is the "why" behind any side business pursuit.
 
-## Investment Portfolio (as of July 2026)
+## Investment Portfolio (live via eToro, as of 2026-08-27)
 
-Actively invests in US equities through a brokerage account. Current holdings (all long positions):
+Actively invests in US equities through eToro. Current holdings (all long positions):
 
-| Asset | Units | Avg. Open | Current Price | P/L | P/L% |
-|-------|-------|-----------|---------------|-----|------|
-| NVDA | 12.87886 | $108.89 | $194.42 | +$1,101.52 | +78.55% |
-| GOOG | 6.7627 | $147.87 | $364.55 | +$1,465.34 | +146.53% |
-| QQQ | 2.37456 | $421.13 | $718.40 | +$705.89 | +70.59% |
-| AAPL | 5.14007 | $194.55 | $313.30 | +$610.38 | +61.04% |
-| VOO | 2.25296 | $443.86 | $690.62 | +$555.33 | +55.53% |
-| TSLA | 1.00966 | $297.13 | $414.87 | +$118.88 | +39.63% |
-| AMZN | 1.43274 | $140.34 | $244.60 | +$149.38 | +74.29% |
+| Asset | Units | Avg. Open | Current Price | Value | P/L | P/L% |
+|-------|-------|-----------|---------------|-------|-----|------|
+| NVDA | 12.87886 | $108.89 | $225.44 | $2,903.42 | +$1,501.03 | +107.04% |
+| GOOG | 6.76270 | $147.87 | $337.13 | $2,279.91 | +$1,279.91 | +128.00% |
+| QQQ | 2.37456 | $421.13 | $718.27 | $1,705.58 | +$705.58 | +70.56% |
+| AAPL | 5.14007 | $194.55 | $310.23 | $1,594.61 | +$594.61 | +59.47% |
+| VOO | 2.25296 | $443.86 | $706.85 | $1,592.51 | +$592.51 | +59.26% |
+| AMZN | 1.43274 | $140.34 | $257.45 | $368.86 | +$167.79 | +83.45% |
+| TSLA | 1.00966 | $297.13 | $352.17 | $355.58 | +$55.58 | +18.53% |
 
-**Total unrealized P/L: ~$4,706** — all positions profitable, tech-heavy, long-term growth oriented.
+Plus a copy-trading position: **AI agent-ZCAKBPQ** — $200 invested, $200 value, $0 open P/L.
 
-*Note: 8 assets shown; one not captured in screenshot.*
+**Trading account total value: $13,810.02** | **Available cash: $2,809.55** | **Total unrealized P/L: $4,897.01** — all positions profitable, tech-heavy, long-term growth oriented.

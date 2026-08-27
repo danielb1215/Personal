@@ -6,6 +6,13 @@
 - This is a significant advantage: USD income with Colombian cost of living gives strong purchasing power
 - No currency conversion friction for US clients or platforms (Stripe, Gumroad, Upwork, etc.)
 
+## Payroll & Money Flow (USD → COP)
+
+- **Paid via Rippling** (employer's payroll platform) in USD
+- Transfers from Rippling → **Wallbit** with **$0 fee**
+- From Wallbit, sends to Colombian bank account and receives in **COP**
+- End-to-end path: Rippling (USD) → Wallbit (USD, no fee) → Colombian bank account (COP)
+
 ## Legal / Tax Status
 
 - **Freelancer / independent contractor** in Colombia
@@ -26,9 +33,12 @@
 
 ## Investment Portfolio
 
-Active stock portfolio (as of July 2026) — all long positions, all profitable:
-- NVDA, GOOG, QQQ, AAPL, VOO, TSLA, AMZN
-- Total unrealized gain: ~$4,706
+Active stock portfolio on eToro (live data as of 2026-08-27) — all long positions, all profitable:
+- NVDA, GOOG, QQQ, AAPL, VOO, AMZN, TSLA
+- Plus one copy-trading position (AI agent-ZCAKBPQ, $200 invested)
+- Trading account total value: **$13,810.02**
+- Available cash: **$2,809.55**
+- Total unrealized gain: **$4,897.01**
 - Style: long-term growth, tech-heavy
 
 See `hobbies.md` for full portfolio table.
