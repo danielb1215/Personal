@@ -52,7 +52,7 @@ Any single failure eliminates the idea. No scoring, no exceptions.
 
 ## Stage 2 — Weighted Scoring
 
-Score each surviving idea **1–5** per criterion. Weighted total out of **80**.
+Score each surviving idea **1–5** per criterion. Weighted total out of **90**.
 
 | # | Criterion | Weight | 5 = | 1 = |
 |---|-----------|--------|-----|-----|
@@ -64,6 +64,25 @@ Score each surviving idea **1–5** per criterion. Weighted total out of **80**.
 | **C6** | **Durability / compounding** | ×2 | Asset earns while he sleeps | Stops earning the day he stops working |
 | **C7** | **Validation speed** | ×1 | Falsifiable in a week for $0 | Months and real money to know |
 | **C8** | **Energy fit** | ×1 | Varied, energizing | More of the desk grind that already drains him |
+| **C9** | **Commoditization resistance** | ×2 | Value is access, accountability, continuous state or trust — an LLM makes the *provider* faster but cannot substitute for them | The deliverable is information the buyer can now generate themselves in an afternoon |
+
+### C9 was added 2026-09-21
+
+Added after a direct challenge: *"with AI most companies can do that."* Largely correct, and the filter had no way to see it — it screened for whether **Daniel** could deliver something, never for whether a **buyer with a good LLM** still needed him to.
+
+The distinction C9 enforces:
+
+| AI has commoditized | AI has not touched |
+|---------------------|--------------------|
+| Knowing *what* to optimize | **Access** to the warehouse, billing export, `INFORMATION_SCHEMA`, dbt repo |
+| Writing the analysis | **Context** — which of 400 models is business-critical vs. abandoned |
+| Producing the report | **Accountability** — someone owns the risk when revenue reporting breaks |
+| Explaining best practice | **Continuity** — being the always-on watcher with historical baselines |
+| | **Doing it** — companies could always read the free docs; they didn't |
+
+The load-bearing point: **"can" and "does" are different businesses.** BigQuery optimization docs have been free for a decade and went unread, not for lack of information but because nobody's job title said "go find 30% of warehouse waste." AI changes what a team *could* do. It does not give anyone slack in their week, nor willingness to own a risky change.
+
+**Honest limit on C9:** these positions erode slowest, not permanently. If implementation itself automates, the whole services category compresses. That is an argument for reaching a product with state and MRR *sooner*, not for treating any service as safe.
 
 ### Weighting rationale
 
@@ -72,15 +91,18 @@ Score each surviving idea **1–5** per criterion. Weighted total out of **80**.
 - **C5 at ×1** — deliberately low. Nearly every software/service idea scores 4–5 here, so it barely discriminates. A criterion that doesn't separate candidates shouldn't carry weight.
 - **C6 at ×2** — the difference between a second job and a business. Underweighting this is how people end up freelancing forever.
 - **C7, C8 at ×1** — real but secondary tiebreakers.
+- **C9 at ×2** — material, but deliberately not ×3. An idea that is AI-proof and also unsellable is worth nothing; resistance to commoditization matters only on top of real skill leverage and a real ceiling.
 
 ### Interpretation bands
 
 | Score | Meaning |
 |-------|---------|
-| **70–80** | Start now |
-| **62–69** | Strong — viable primary candidate |
-| **54–61** | Conditional — needs a specific angle to work |
-| **Below 54** | Park it |
+| **78–90** | Start now |
+| **69–77** | Strong — viable primary candidate |
+| **60–68** | Conditional — needs a specific angle to work |
+| **Below 60** | Park it |
+
+Rescaled from /80 when C9 was added.
 
 ---
 
@@ -97,3 +119,5 @@ Score each surviving idea **1–5** per criterion. Weighted total out of **80**.
 - **Scores are estimates, not measurements.** They encode judgment about markets that haven't been tested. Treat a 68 vs. a 65 as noise.
 - **The filter cannot detect "no demand."** Every idea here can score well and still have nobody willing to pay. Only customer conversations and money settle that.
 - **C8 is self-reported.** Daniel may discover that client work drains him far more than a 3 predicts, which would reorder everything.
+- **The filter scores ideas, not offers.** C9 exposed this: the *same* idea scored 72 as a report and 75 as an implementation engagement. How a thing is packaged can matter more than which thing it is — so score the specific offer, not the category.
+- **A missing criterion is invisible.** C9 didn't exist for the first run and silently mis-ranked the list. Re-challenge the criteria themselves, not just the scores.

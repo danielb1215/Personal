@@ -29,8 +29,9 @@ Find a sustainable side business or income stream that:
 
 > ✅ **Strategic fork resolved (2026-09-21): remote-and-slower.** Location independence is a hard veto; 12–18 month ramp accepted. See `../persona/finances.md`.
 > ✅ Scoring filter built; 10 skills-based ideas scored in `ideas/shortlist-2026-09.md`.
-> 🎯 **Current focus: warehouse cost-reduction audit** (ranked #1, 68/80) — productized remote service leveraging the documented 67.5% data-ops cost reduction.
-> ⏭️ **Next action:** review Crowd Cow employment agreement for moonlighting / non-compete / IP clauses, then run the 20-message outreach validation test.
+> ♻️ **Rescored 2026-09-21** after the challenge *"with AI most companies can do that."* It held — criterion **C9 (commoditization resistance)** added, all ideas rescored out of 90. Selling a *report* is commoditized; selling *implemented savings* is not.
+> 🎯 **Current focus: warehouse cost reduction, delivered as implementation** (tied #1, 75/90) — leverages the documented 67.5% data-ops cost reduction. Chosen over the equally-scored DTC attribution retainer because it is domain-neutral and carries no Crowd Cow conflict risk.
+> ⏭️ **Next action:** review Crowd Cow employment agreement for moonlighting / non-compete / IP clauses (blocking), then run the 20-message outreach validation test.
 
 ## Rejected / Parked
 
