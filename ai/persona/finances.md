@@ -72,8 +72,26 @@ This would either:
 
 ## Key Constraints for Any Business Idea
 
-1. Must work async / remotely — no location dependency
+1. **Must work async / remotely — no location dependency** ← hard veto
 2. Must not require more than 10–15h/week to start
-3. Revenue should be visible within 3–6 months
+3. ~~Revenue should be visible within 3–6 months~~ → **downgraded to a preference, not a gate** (see fork below). Accepted ramp: 12–18 months to $2–3k/month.
 4. Ideally leverages existing data engineering skills (no new learning curve to start earning)
 5. Target: $2–3k MRR before considering leaving primary job
+6. No bodily-injury / safety-critical liability exposure
+7. No physical inventory
+
+## Resolved Strategic Fork (2026-09-21)
+
+Constraints 1 and 3 above were in direct contradiction, and that contradiction was silently vetoing every idea generated. Fast revenue in Colombia means a *local physical* business — inventory, delivery, in-person service — which anchors to Bogotá and defeats the stated purpose of the exercise: financial freedom to travel and explore nature full-time.
+
+**Decision: remote-and-slower.** Location independence wins; the 3–6 month revenue target yields.
+
+Consequences:
+- Killed the carbon wheel dealer idea (economics worked, model anchors him)
+- Parked the B2B coffee Bogotá idea despite validated economics — it funds travel by preventing travel
+- Redirected idea generation from hobby-derived physical goods toward data-engineering skill monetization
+
+Scoring framework: `../entrepreneurship/scoring-filter.md`
+Current ranked shortlist: `../entrepreneurship/ideas/shortlist-2026-09.md`
+
+**Caveat found while scoring:** "slower" turned out to describe the accepted worst case, not the actual outlook. A productized remote service (warehouse cost audits) can plausibly produce revenue in 60–90 days. The fork gave up *local* fast cash, not speed itself.

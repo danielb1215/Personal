@@ -12,18 +12,31 @@ Find a sustainable side business or income stream that:
 
 ## Process
 
-1. **Persona complete** → Fill in `../persona/` files (hobbies, finances, values)
-2. **Idea generation** → Use `/speckit-specify` to brainstorm based on persona context
-3. **Validation** → Research each idea for market size, competition, and fit
-4. **Planning** → Use `/speckit-plan` + `/speckit-tasks` to build execution roadmap
+1. **Persona complete** → Fill in `../persona/` files (hobbies, finances, values) ✅
+2. **Screen** → Run every idea through `scoring-filter.md` **before** researching it. Hard vetoes first, weighted scoring second. This step exists because ideas were previously researched in depth and only then found to be structurally disqualified.
+3. **Validation** → Research surviving ideas for market size, competition, and fit. Talk to buyers; demand is never settled by a score.
+4. **Planning** → Use `/speckit-specify`, then `/speckit-plan` + `/speckit-tasks` to build the execution roadmap
 5. **Execute** → Track progress in `ideas/` and `experiments/` folders
 
 ## Folders
 
-- `ideas/` — brainstormed business ideas with initial analysis
+- `scoring-filter.md` — **the screen.** Hard vetoes + weighted scoring criteria. Start here.
+- `ideas/` — business ideas with analysis, including rejected ones and why
 - `experiments/` — active experiments / MVPs being tested
 - `research/` — market research, competitor analysis, pricing data
 
 ## Status
 
-> 🔄 In progress — persona context being built
+> ✅ **Strategic fork resolved (2026-09-21): remote-and-slower.** Location independence is a hard veto; 12–18 month ramp accepted. See `../persona/finances.md`.
+> ✅ Scoring filter built; 10 skills-based ideas scored in `ideas/shortlist-2026-09.md`.
+> 🎯 **Current focus: warehouse cost-reduction audit** (ranked #1, 68/80) — productized remote service leveraging the documented 67.5% data-ops cost reduction.
+> ⏭️ **Next action:** review Crowd Cow employment agreement for moonlighting / non-compete / IP clauses, then run the 20-message outreach validation test.
+
+## Rejected / Parked
+
+| Idea | Status | Reason |
+|------|--------|--------|
+| Carbon wheel own brand | ❌ Rejected | Capital 2–3× over budget; uninsurable injury liability; 2026 tariffs broke the DTC model |
+| Carbon wheel Colombia dealer | ❌ Rejected | Economics worked, but inventory + local service anchors to Bogotá |
+| Cycling apparel brand | ❌ Rejected | Saturated, and structurally location/inventory bound |
+| B2B coffee Bogotá | ⏸️ Parked | Validated economics and solved supply, but Bogotá-anchored — funds travel by preventing travel |
