@@ -31,6 +31,7 @@ def run(fixtures, tmp_path, password_env):
     ("2024-03_Bancolombia_AmericanExpress_1234.pdf", (2024, 3, "credit_card", "Amex", "1234")),
     ("2024-03_Bancolombia_Visa_7380.PDF", (2024, 3, "credit_card", "Visa", "7380")),
     ("2024-03_Bancolombia_Extracto_0001.pdf", (2024, 3, "", "", "0001")),
+    ("2021-07_Bancolombia_Extracto.pdf", (2021, 7, "", "", "")),
 ])
 def test_parse_filename(name, expected):
     info = be.parse_filename(name)
@@ -116,7 +117,7 @@ def test_password_prompt_used_when_env_missing(fixtures, tmp_path, monkeypatch):
 def test_unlock_only(run):
     code, out = run("--unlock-only")
     assert code == 0
-    assert len(list((out / "unlocked").glob("*.pdf"))) == 3
+    assert len(list((out / "unlocked").glob("*.pdf"))) == 6
     assert not (out / "transactions.csv").exists()
 
 
@@ -170,8 +171,8 @@ def test_credit_card_signs_currency_and_installments(run):
     assert by_desc["ABONO SUCURSAL VIRTUAL PSE"]["amount"] == "2000000.00"
     assert by_desc["INTERESES CORRIENTES"]["amount"] == "-35000.00"
     electro = by_desc["ALMACEN ELECTRO"]
-    assert (electro["amount"], electro["installment"], electro["original_amount"], electro["rate_ea"]) == (
-        "-100000.00", "1/12", "1200000.00", "25.1200%")
+    assert (electro["amount"], electro["billed_amount"], electro["installment"], electro["original_amount"],
+            electro["rate_ea"]) == ("-1200000.00", "-100000.00", "1/12", "1200000.00", "25.1200%")
     assert by_desc["NETFLIX.COM"]["currency"] == "USD"
     assert {r["currency"] for r in rows if r["description"] != "NETFLIX.COM"} == {"COP"}
 
@@ -179,7 +180,7 @@ def test_credit_card_signs_currency_and_installments(run):
 def test_statements_reconcile(run):
     _, out = run()
     stmts = read_csv(out / "statements.csv")
-    assert len(stmts) == 4  # visa has COP + USD sections
+    assert len(stmts) == 8  # both card files have COP + USD sections
     assert all(s["reconciles"] == "yes" for s in stmts), stmts
     savings = next(s for s in stmts if s["source_file"].startswith("2026-01"))
     assert savings["opening_balance"] == "1000000.00"
@@ -208,7 +209,7 @@ def test_merge_into(run, tmp_path):
         csv.writer(fh).writerow(be.UNIFIED_COLUMNS)
     run("--merge-into", str(unified))
     rows = read_csv(unified)
-    assert len(rows) == 12
+    assert len(rows) == 25
     flows = {r["description"]: r["flow_type"] for r in rows}
     assert flows["PAGO TARJETA VISA"] == "card_payment"
     assert flows["ABONO SUCURSAL VIRTUAL PSE"] == "card_payment"
@@ -217,7 +218,7 @@ def test_merge_into(run, tmp_path):
     assert flows["RESTAURANTE CREPES"] == "spending"
     assert flows["ABONO INTERESES AHORROS"] == "income"
     run("--merge-into", str(unified))  # re-running must not duplicate rows
-    assert len(read_csv(unified)) == 12
+    assert len(read_csv(unified)) == 25
 
 
 def test_default_input_dir(monkeypatch):
@@ -225,3 +226,57 @@ def test_default_input_dir(monkeypatch):
     assert be.build_arg_parser().parse_args([]).input == be.DEFAULT_INPUT
     monkeypatch.setenv(be.INPUT_ENV, "/somewhere/else")
     assert str(be.build_arg_parser().parse_args([]).input) == "/somewhere/else"
+
+
+# --- real-layout mimics -----------------------------------------------------
+
+def rows_for(out, prefix):
+    return [r for r in read_csv(out / "transactions.csv") if r["source_file"].startswith(prefix)]
+
+
+def test_savings_amounts_without_leading_zero(run):
+    _, out = run()
+    rows = rows_for(out, "2025-03")
+    assert [r["amount"] for r in rows] == ["2.00", "-0.02", "0.72", "1000000.00", "-300000.00"]
+    assert all(r["parse_confidence"] == "medium" for r in rows)
+    stmt = next(s for s in read_csv(out / "statements.csv") if s["source_file"].startswith("2025-03"))
+    assert (stmt["reconciles"], stmt["error"]) == ("yes", "")
+
+
+def test_empty_statement_is_not_a_failure(run, capsys):
+    _, out = run()
+    stmt = next(s for s in read_csv(out / "statements.csv") if s["source_file"].startswith("2018-09"))
+    assert stmt["reconciles"] == "yes" and stmt["n_transactions"] == "0" and stmt["error"] == ""
+    assert "2018-09_Bancolombia_CuentaAhorros_5446.pdf: ok (no movements in period)" in capsys.readouterr().out
+
+
+def test_card_real_layout(run):
+    _, out = run()
+    rows = rows_for(out, "2021-03")
+    by_desc = {r["description"].split(" |")[0].split(" (")[0]: r for r in rows}
+    # brand comes from the sibling file with the same last4 (Visa 7380); type detected from text
+    assert {r["account"] for r in rows} == {"Bancolombia Visa 7380"}
+    store = by_desc["ONLINE STORE US"]
+    assert (store["currency"], store["amount"], store["billed_amount"], store["installment"]) == (
+        "USD", "-120.00", "-3.33", "1/36")
+    assert "VR MONEDA ORIG 120.00 USD" in store["description"]
+    assert by_desc["BOTON PAGO TELEFONIA"]["amount"] == "-20000.00"  # 'PAGO' in a purchase name
+    assert by_desc["FARMACIA PRUEBA"]["amount"] == "-50000.00"
+    assert by_desc["INTERESES CORRIENTES"]["amount"] == "-33.23"
+    gym = by_desc["GIMNASIO PRUEBA"]  # installment 4/12 of a purchase from before the period
+    assert (gym["amount"], gym["billed_amount"]) == ("0.00", "-10000.00")
+    payments = [r for r in rows if r["description"] == "ABONO SUCURSAL VIRTUAL"]
+    assert sorted(r["amount"] for r in payments) == ["300000.00", "50.00"]
+    stmts = [s for s in read_csv(out / "statements.csv") if s["source_file"].startswith("2021-03")]
+    assert {(s["currency"], s["reconciles"]) for s in stmts} == {("COP", "yes"), ("USD", "yes")}
+    cop = next(s for s in stmts if s["currency"] == "COP")
+    assert (cop["opening_balance"], cop["closing_balance"], cop["printed_total_debits"],
+            cop["printed_total_credits"]) == ("300000.00", "150134.00", "150100.00", "300000.00")
+
+
+def test_card_saldo_a_favor():
+    parser = be.CreditCardParser()
+    pay = be.Txn(be.dt.date(2021, 7, 3), Decimal("30.00"), "ABONO", "USD", 1, "l0", "medium", "")
+    buy = be.Txn(be.dt.date(2021, 6, 19), Decimal("-14.99"), "APP", "USD", 1, "l1", "medium", "")
+    summary = {"opening": Decimal("14.74"), "closing": Decimal("0.00"), "favor": Decimal("0.27")}
+    assert parser.reconcile("USD", [pay, buy], summary)[0] == "yes"

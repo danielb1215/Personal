@@ -41,7 +41,7 @@ TXN_COLUMNS = [
     "branch", "document_ref", "balance_after", "statement_period_start",
     "statement_period_end", "source_file", "page", "parse_confidence", "raw_line",
     # extra card columns (empty for savings)
-    "installment", "original_amount", "rate_ea",
+    "installment", "original_amount", "rate_ea", "billed_amount",
 ]
 STATEMENT_COLUMNS = [
     "source_file", "account", "account_type", "parser", "currency",
@@ -126,9 +126,12 @@ def fmt_amount(value: Decimal | None) -> str:
 
 
 # A printed money amount always has exactly two decimals in Bancolombia statements.
-MONEY_TOKEN = re.compile(r"^\(?[-+]?\$?[-+]?(?:\d{1,3}(?:[.,]\d{3})+|\d+)[.,]\d{2}-?\)?$")
-MONEY_IN_TEXT = re.compile(r"[-+]?\$?\s?(?:\d{1,3}(?:[.,]\d{3})+|\d+)[.,]\d{2}(?!\d)-?")
+# The integer part may be missing: Bancolombia prints ".72" and "-.02".
+MONEY_TOKEN = re.compile(r"^\(?[-+]?\$?[-+]?(?:\d{1,3}(?:[.,]\d{3})+|\d*)[.,]\d{2}-?\)?$")
+MONEY_IN_TEXT = re.compile(r"[-+]?\$?\s?(?:\d{1,3}(?:[.,]\d{3})+|\d*)[.,]\d{2}(?!\d)-?")
 PCT_TOKEN = re.compile(r"^\d{1,3}[.,]\d{1,6}%$|^\d{1,3}[.,]\d{3,6}$")
+# Card statements print amounts as 1,234.56 but rates as 1,43 / 16,4888 / 00,00.
+CARD_RATE_TOKEN = re.compile(r"^\d{1,3},\d{2,6}%?$")
 CUOTA_TOKEN = re.compile(r"^\d{1,3}/\d{1,3}$")
 INT_TOKEN = re.compile(r"^\d{1,12}$")
 DATE_TOKEN = re.compile(
@@ -136,7 +139,7 @@ DATE_TOKEN = re.compile(
 )
 TXN_LIKE = re.compile(
     r"^(?:[A-Z0-9]{3,10}\s+)?(?:\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)\s.*"
-    r"(?:\d{1,3}(?:[.,]\d{3})+|\d+)[.,]\d{2}(?!\d)",
+    r"(?:\d{1,3}(?:[.,]\d{3})+|\d*)[.,]\d{2}(?!\d)",
     re.I,
 )
 
@@ -216,7 +219,7 @@ def last_currency_header(lines) -> str | None:
 
 FILENAME_RE = re.compile(
     r"^(?P<year>\d{4})-(?P<month>\d{2})_Bancolombia_"
-    r"(?P<type>CuentaAhorros|Visa|AmericanExpress|MasterCard|Extracto)_(?P<last4>\d{4})\.pdf$",
+    r"(?P<type>CuentaAhorros|Visa|AmericanExpress|MasterCard|Extracto)(?:_(?P<last4>\d{4}))?\.pdf$",
     re.I,
 )
 # filename type -> (account_type, brand)
@@ -244,7 +247,7 @@ def parse_filename(name: str) -> FileInfo | None:
     if not m:
         return None
     account_type, brand = FILE_TYPES[m["type"].lower()]
-    return FileInfo(int(m["year"]), int(m["month"]), m["type"], account_type, brand, m["last4"])
+    return FileInfo(int(m["year"]), int(m["month"]), m["type"], account_type, brand, m["last4"] or "")
 
 
 def detect_brand(norm_text: str) -> str:
@@ -397,7 +400,7 @@ class Txn:
     installment: str = ""
     original_amount: Decimal | None = None
     rate_ea: str = ""
-    debt_delta: Decimal | None = None  # card only: change in total debt caused by this row
+    billed_amount: Decimal | None = None  # card only: "Cargos y abonos" billed this month
 
 
 @dataclass
@@ -450,11 +453,12 @@ class StatementContext:
         return None, False
 
 
-def split_line(line: str):
+def split_line(line: str, rate_token: re.Pattern | None = None):
     """Split '[auth] DATE description ... trailing numeric tokens'.
 
     Returns (auth, date_token, description, tail) where tail is a list of
     (kind, token) with kind in money/pct/cuota/int, or None if no leading date.
+    `rate_token` marks tokens that must be read as rates even if they look like money.
     """
     tokens = line.split()
     if len(tokens) < 3:
@@ -470,7 +474,9 @@ def split_line(line: str):
     tail, j = [], len(tokens)
     while j > i:
         t = tokens[j - 1]
-        if MONEY_TOKEN.match(t):
+        if rate_token and rate_token.match(t):
+            kind = "pct"
+        elif MONEY_TOKEN.match(t):
             kind = "money"
         elif PCT_TOKEN.match(t):
             kind = "pct"
@@ -515,7 +521,11 @@ class BaseParser:
     def signed_amount(self, fields: dict) -> Decimal | None:
         return fields.get("amount")
 
-    def postprocess(self, res: ParseResult) -> None:
+    def continuation(self, line: str, last_txn: Txn | None) -> bool:
+        """Handle a non-movement line that belongs to the previous movement."""
+        return False
+
+    def postprocess(self, res: ParseResult, ctx: StatementContext) -> None:
         pass
 
     def reconcile(self, currency: str, txns: list, summary: dict) -> tuple[str, list]:
@@ -533,7 +543,7 @@ class BaseParser:
             if page_txns:
                 res.txns += page_txns
             else:
-                cur = currency
+                cur, last = currency, None
                 for idx, raw in enumerate(page.lines):
                     line = prep_line(raw)
                     if not line:
@@ -548,11 +558,14 @@ class BaseParser:
                         txn = self._build(fields, ctx, page.number, f"l{idx}", cur, "medium", raw)
                     if txn:
                         res.txns.append(txn)
+                        last = txn
+                    elif self.continuation(line, last):
+                        pass
                     elif TXN_LIKE.match(line):
                         res.unparsed.append((page.number, idx, cur, raw))
             currency = last_currency_header(page.lines) or currency
         res.summaries = self.extract_summaries(ctx)
-        self.postprocess(res)
+        self.postprocess(res, ctx)
         return res
 
     def _parse_table(self, rows, ctx, page_no, t_idx, currency) -> list:
@@ -586,7 +599,7 @@ class BaseParser:
             branch=fields.get("branch", ""), document_ref=fields.get("document_ref", ""),
             balance_after=fields.get("balance"), installment=fields.get("installment", ""),
             original_amount=fields.get("original_amount"), rate_ea=fields.get("rate_ea", ""),
-            debt_delta=fields.get("debt_delta"),
+            billed_amount=fields.get("billed_amount"),
         )
 
     def extract_summaries(self, ctx: StatementContext) -> dict:
@@ -601,7 +614,7 @@ class BaseParser:
         # Case 1: "LABEL ... $1,234.56" on one line
         for key, patterns in self.summary_labels.items():
             for pat in patterns:
-                rx = re.compile(rf"^[+\-=:\s]*(?:{pat})\b[^0-9$\-]{{0,40}}?({MONEY_IN_TEXT.pattern})")
+                rx = re.compile(rf"(?<![A-Z])(?:{pat})\b[^0-9$\-]{{0,40}}?({MONEY_IN_TEXT.pattern})")
                 for cur, line in tagged:
                     if key in out.get(cur, {}) or DATE_TOKEN.match(line.split(" ")[0] if line else ""):
                         continue
@@ -646,7 +659,8 @@ class SavingsParser(BaseParser):
     def detect(cls, ctx):
         score = 100 if ctx.info and ctx.info.account_type == "savings" else 0
         t = ctx.norm_text
-        score += 20 * bool(re.search(r"CUENTA DE AHORROS|AHORROS", t))
+        score += 20 * bool(re.search(r"CUENTA DE AHORROS", t))
+        score += 5 * bool(re.search(r"SALDO PROMEDIO", t))
         score += 5 * bool(re.search(r"\bSUCURSAL\b", t)) + 5 * bool(re.search(r"\bDCTO\b", t))
         return score
 
@@ -698,7 +712,7 @@ class SavingsParser(BaseParser):
             "amount": parse_amount(amount_tok), "balance": parse_amount(balance_tok),
         }
 
-    def postprocess(self, res):
+    def postprocess(self, res, ctx):
         """Use the running SALDO column to verify (and if needed flip) each row's sign."""
         by_cur: dict = {}
         for t in res.txns:
@@ -740,31 +754,38 @@ class SavingsParser(BaseParser):
         return "no", notes + [f"{currency}: opening {opening} + movements {net} != closing {closing}"]
 
 
-CARD_CREDIT_WORDS = re.compile(r"\b(ABONO|PAGO|PAGOS|DEVOLUCION|REVERSO|REVERSION|NOTA CREDITO|AJUSTE A FAVOR)\b")
-
-
 class CreditCardParser(BaseParser):
-    """Visa / Mastercard / Amex monthly statement. Columns roughly:
-    Nº autorización | Fecha | Descripción | Valor original | Tasa pactada |
-    Tasa EA facturada | Cargos y abonos | Saldo a diferir | Cuotas."""
+    """Visa / Mastercard / Amex monthly statement (one page per currency: PESOS / DOLARES).
+
+    Movement columns: Nº autorización | Fecha | Descripción | Valor original | Tasa pactada |
+    Tasa EA facturada | Cargos y abonos | Saldo a diferir | Cuotas, e.g.
+        R02806 14/03/2021 AMZN Mktp US*NH5 158.42 1,2800 16,4888 4.40 154.02 1/36
+        C08721 04/03/2021 ABONO SUCURSAL VIRTUAL 473,627.00- 473,627.00- 0.00
+        009667 28/08/2020 FARMATODO USAQUEN 88,450.00 0.00 0.00 1/1
+    Amounts use 1,234.56 with a trailing '-' for credits; rates use a decimal comma.
+
+    `amount` is the purchase value (Valor original) on the statement where the purchase first
+    appears; the month's billed value (Cargos y abonos) goes in `billed_amount`. Installments of
+    purchases made before this period (cuota k/N, k > 1) get amount 0 so nothing is counted twice.
+    """
 
     name = "credit_card"
     account_type = "credit_card"
     summary_labels = {
         "opening": [r"SALDO ANTERIOR"],
-        "debits": [r"TOTAL CARGOS", r"COMPRAS(?: DEL (?:MES|PERIODO))?", r"CARGOS(?: DEL (?:MES|PERIODO))?"],
-        "credits": [r"PAGOS(?: Y ABONOS)?", r"TOTAL ABONOS", r"ABONOS"],
-        "closing": [r"SALDO TOTAL", r"DEUDA TOTAL", r"NUEVO SALDO", r"SALDO ACTUAL",
-                    r"SALDO A LA FECHA", r"PAGO TOTAL"],
+        "debits": [r"TOTAL CARGOS", r"COMPRAS DEL (?:MES|PERIODO)", r"COMPRAS"],
+        "credits": [r"PAGOS? ?/ ?ABONOS", r"PAGOS Y ABONOS", r"TOTAL ABONOS"],
+        "closing": [r"SALDO TOTAL", r"DEUDA TOTAL", r"NUEVO SALDO", r"PAGOS? TOTAL"],
+        "favor": [r"SALDO A FAVOR"],
     }
 
     @classmethod
     def detect(cls, ctx):
         score = 100 if ctx.info and ctx.info.account_type == "credit_card" else 0
         t = ctx.norm_text
-        score += 20 * bool(re.search(r"TARJETA DE CREDITO", t))
+        score += 20 * bool(re.search(r"TARJETA DE CREDITO|CUPON DE PAGO|ESTADO DE CUENTA EN:", t))
         score += 10 * bool(detect_brand(t))
-        score += 5 * bool(re.search(r"PAGO MINIMO|CUPO|TASA (?:PACTADA|EA)|SALDO A DIFERIR", t))
+        score += 10 * bool(re.search(r"PERIODO FACTURADO|PAGO MINIMO|TASA (?:PACTADA|EA)|SALDO A DIFERIR", t))
         return score
 
     def map_header(self, cells):
@@ -799,15 +820,15 @@ class CreditCardParser(BaseParser):
         get = lambda k: cells[mapping[k]] if k in mapping and mapping[k] < len(cells) else ""
         if not DATE_TOKEN.match(get("date")):
             return None
-        amount = parse_amount(get("amount"))
-        if amount is None:
+        billed = parse_amount(get("amount"))
+        if billed is None:
             return None
-        return self._fields(get("date"), get("description"), amount,
+        return self._fields(get("date"), get("description"), billed,
                             parse_amount(get("original_amount")), get("rate_ea"),
-                            parse_amount(get("deferred")), get("installment"), get("auth"))
+                            get("installment"), get("auth"))
 
     def fields_from_line(self, line):
-        parts = split_line(line)
+        parts = split_line(line, CARD_RATE_TOKEN)
         if not parts:
             return None
         auth, date_token, desc, tail = parts
@@ -821,60 +842,63 @@ class CreditCardParser(BaseParser):
             before = [t for k, t in tail[:first_pct] if k == "money"]
             after = [t for k, t in tail[first_pct:] if k == "money"]
             original = before[0] if before else None
-            charge = after[0] if after else (before[-1] if before else None)
-            deferred = after[1] if len(after) > 1 else None
+            billed = after[0] if after else (before[-1] if before else None)
         else:
+            # [original, billed, deferred] / [original, billed] / [billed]
             money = [t for k, t in tail if k == "money"]
-            original, charge, deferred = None, money[0], None
-            if len(money) >= 2:
-                original, charge = money[0], money[1]
-            if len(money) >= 3:
-                deferred = money[2]
-        amount = parse_amount(charge)
-        if amount is None:
+            original, billed = (money[0], money[1]) if len(money) >= 2 else (None, money[0])
+        billed_value = parse_amount(billed)
+        if billed_value is None:
             return None
-        return self._fields(date_token, desc, amount, parse_amount(original),
-                            pcts[-1] if pcts else "", parse_amount(deferred), installment, auth)
+        return self._fields(date_token, desc, billed_value, parse_amount(original),
+                            pcts[-1] if pcts else "", installment, auth)
 
     @staticmethod
-    def _fields(date, desc, printed, original, rate_ea, deferred, installment, auth):
-        credit = printed < 0 or bool(CARD_CREDIT_WORDS.search(norm(desc)))
-        # Debt delta: a first installment of a deferred purchase adds the full original
-        # value to the debt; later installments only move deferred debt to billed.
-        debt_delta = abs(printed) * (-1 if credit else 1)
-        m = re.fullmatch(r"(\d+)/(\d+)", installment or "")
-        if m and not credit and int(m[2]) > 1:
-            debt_delta = (abs(original) if original is not None else abs(printed)) if int(m[1]) == 1 else Decimal(0)
+    def _fields(date, desc, billed, original, rate_ea, installment, auth):
+        # Credits (payments, refunds) are printed with a trailing/leading minus.
+        credit = billed < 0 or (original is not None and original < 0)
+        value = abs(original) if original is not None else abs(billed)
         return {
-            "date": date, "description": desc, "printed": printed, "credit": credit,
+            "date": date, "description": desc, "credit": credit, "value": value,
+            "billed_amount": -abs(billed) if not credit else abs(billed),
             "original_amount": original, "rate_ea": rate_ea, "installment": installment,
-            "document_ref": auth, "debt_delta": debt_delta,
-            "deferred": deferred,
+            "document_ref": auth,
         }
 
     def signed_amount(self, fields):
         # Cardholder view: purchases/interest/fees negative, payments/credits positive.
-        return abs(fields["printed"]) if fields["credit"] else -abs(fields["printed"])
+        return fields["value"] if fields["credit"] else -fields["value"]
+
+    def continuation(self, line, last_txn):
+        # "VR MONEDA ORIG 29.4 GB" follows a foreign-currency purchase.
+        if last_txn is not None and norm(line).startswith("VR MONEDA ORIG"):
+            last_txn.description = f"{last_txn.description} | {line.strip()}"
+            return True
+        return False
+
+    def postprocess(self, res, ctx):
+        for t in res.txns:
+            m = re.fullmatch(r"(\d+)/(\d+)", t.installment or "")
+            if (m and int(m[1]) > 1 and t.amount < 0 and ctx.period_start
+                    and t.date < ctx.period_start):
+                t.amount = Decimal(0)
+                t.description = f"{t.description} (installment {t.installment} of an earlier purchase)"
 
     def reconcile(self, currency, txns, summary):
         notes = []
         opening, closing = summary.get("opening"), summary.get("closing")
-        charges = -sum((t.amount for t in txns if t.amount < 0), Decimal(0))
         payments = sum((t.amount for t in txns if t.amount > 0), Decimal(0))
-        if summary.get("debits") is not None and abs(abs(summary["debits"]) - charges) > TOLERANCE:
-            notes.append(f"{currency}: printed charges {summary['debits']} != billed charges {charges} "
-                         "(deferred purchases/interest may explain this)")
         if summary.get("credits") is not None and abs(abs(summary["credits"]) - payments) > TOLERANCE:
             notes.append(f"{currency}: printed payments {summary['credits']} != parsed {payments}")
         if opening is None or closing is None:
             return "unknown", notes + [f"{currency}: opening/closing balance not found"]
-        billed = opening - sum((t.amount for t in txns), Decimal(0))
-        debt = opening + sum((t.debt_delta or 0 for t in txns), Decimal(0))
-        if abs(billed - closing) <= TOLERANCE:
+        # "Pagos total" is the balance rounded up to whole units; a credit balance shows
+        # as "Saldo a favor" with Pagos total 0.
+        closing_debt = closing - abs(summary.get("favor") or Decimal(0))
+        expected = opening - sum((t.amount for t in txns), Decimal(0))
+        if abs(expected - closing_debt) <= TOLERANCE:
             return "yes", notes
-        if abs(debt - closing) <= TOLERANCE:
-            return "yes", notes + [f"{currency}: reconciled using total debt (full value of new deferred purchases)"]
-        return "no", notes + [f"{currency}: expected closing {billed} (billed) or {debt} (total debt), printed {closing}"]
+        return "no", notes + [f"{currency}: opening {opening} - movements = {expected}, printed closing {closing_debt}"]
 
 
 PARSERS: list[type[BaseParser]] = [SavingsParser, CreditCardParser]
@@ -898,6 +922,7 @@ class FileOutcome:
     unlocked: bool = False
     parsed: bool = False
     reconciled: str = ""  # yes/no/unknown/partial
+    empty: bool = False
     txn_rows: list = field(default_factory=list)
     statement_rows: list = field(default_factory=list)
     unparsed_rows: list = field(default_factory=list)
@@ -905,7 +930,9 @@ class FileOutcome:
 
 
 def process_file(src: Path, out_dir: Path, passwords: PasswordProvider, unlock_only: bool,
-                 extended_dump: bool) -> FileOutcome:
+                 extended_dump: bool, hints: dict | None = None) -> FileOutcome:
+    """Unlock, dump and parse one PDF. `hints` maps last4 -> FileInfo from sibling filenames,
+    used to name the card brand of files saved as "..._Extracto.pdf"."""
     outcome = FileOutcome(src.name)
     info = parse_filename(src.name)
     unlocked_path = out_dir / "unlocked" / src.name
@@ -933,6 +960,9 @@ def process_file(src: Path, out_dir: Path, passwords: PasswordProvider, unlock_o
         account_type = parser.account_type
         brand = (info.brand if info and info.brand else "") or (detect_brand(norm_text) if account_type == "credit_card" else "")
         last4 = (info.last4 if info else "") or detect_last4(norm_text)
+        hint = (hints or {}).get(last4)
+        if not brand and hint and hint.account_type == account_type:
+            brand = hint.brand
         account = account_label(account_type, brand, last4)
         result = parser.parse(ctx)
     except Exception as exc:  # noqa: BLE001
@@ -953,7 +983,7 @@ def process_file(src: Path, out_dir: Path, passwords: PasswordProvider, unlock_o
             **period, "source_file": src.name, "page": t.page,
             "parse_confidence": t.confidence, "raw_line": t.raw_line,
             "installment": t.installment, "original_amount": fmt_amount(t.original_amount),
-            "rate_ea": t.rate_ea,
+            "rate_ea": t.rate_ea, "billed_amount": fmt_amount(t.billed_amount),
         })
     for page, idx, cur, raw in result.unparsed:
         outcome.unparsed_rows.append({"source_file": src.name, "page": page, "line_index": idx,
@@ -979,10 +1009,13 @@ def process_file(src: Path, out_dir: Path, passwords: PasswordProvider, unlock_o
             "parsed_net": fmt_amount(credits - debits), "n_transactions": len(txns),
             "n_unparsed": sum(1 for u in result.unparsed if u[2] == cur),
             "reconciles": flag,
-            "error": "; ".join(result.warnings + notes),
+            "error": "; ".join([w for w in result.warnings if w.startswith(f"{cur}:")
+                                or not re.match(r"^[A-Z]{3}:", w)] + notes),
         })
     outcome.parsed = bool(result.txns)
-    if not result.txns:
+    if not result.txns and flags and all(f == "yes" for f in flags):
+        outcome.empty = True  # statement with no movements (all balances zero/unchanged)
+    elif not result.txns:
         outcome.error = "no transactions parsed (see text/ and unparsed_lines.csv)"
         outcome.statement_rows[-1]["error"] = "; ".join(filter(None, [outcome.statement_rows[-1]["error"], outcome.error]))
     outcome.reconciled = flags[0] if len(set(flags)) == 1 else ("no" if "no" in flags else "partial")
@@ -1096,10 +1129,22 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     args.output.mkdir(parents=True, exist_ok=True)
     passwords = PasswordProvider()
+    hints = {}
+    for src in pdfs:
+        info = parse_filename(src.name)
+        if info and info.last4 and info.account_type:
+            hints[info.last4] = info
     outcomes = []
     for src in pdfs:
-        outcome = process_file(src, args.output, passwords, args.unlock_only, args.dump_text)
-        status = "ok" if not outcome.error else outcome.error
+        outcome = process_file(src, args.output, passwords, args.unlock_only, args.dump_text, hints)
+        if outcome.error:
+            status = outcome.error
+        elif args.unlock_only:
+            status = "unlocked"
+        elif outcome.empty:
+            status = "ok (no movements in period)"
+        else:
+            status = f"ok, {len(outcome.txn_rows)} rows, reconciles={outcome.reconciled}"
         print(f"  {src.name}: {status}")
         outcomes.append(outcome)
 
@@ -1119,6 +1164,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  unlocked        : {unlocked}")
     if not args.unlock_only:
         print(f"  parsed          : {sum(o.parsed for o in outcomes)}")
+        print(f"  empty (no movs) : {sum(o.empty for o in outcomes)}")
         print(f"  reconciled      : {sum(o.reconciled == 'yes' for o in outcomes)}")
         print(f"  not reconciled  : {sum(o.reconciled in ('no', 'partial') for o in outcomes)}")
         print(f"  unknown         : {sum(o.reconciled == 'unknown' for o in outcomes)}")

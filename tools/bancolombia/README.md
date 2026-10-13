@@ -62,7 +62,7 @@ Useful flags:
 
 - `unlocked/`: password-free PDFs with the same filenames. These are written before any parsing, so they exist even if parsing fails.
 - `text/`: raw text of every PDF, page by page.
-- `transactions.csv`: one row per movement. `txn_id` is a stable hash of file + page + line, so re-runs give the same IDs. Extra columns `installment`, `original_amount` and `rate_ea` are filled for credit cards.
+- `transactions.csv`: one row per movement. `txn_id` is a stable hash of file + page + line, so re-runs give the same IDs. Extra columns `installment`, `original_amount`, `rate_ea` and `billed_amount` are filled for credit cards.
 - `statements.csv`: one row per PDF **per currency section** (a card with a USD section gets a COP row and a USD row). Shows printed opening/closing balances and totals next to the parsed totals, plus `reconciles` = `yes` / `no` / `unknown` (unknown means the opening or closing balance wasn't found). The `error` column holds warnings.
 - `unparsed_lines.csv`: lines that start with a date and contain an amount but didn't parse. **Check this file first** when numbers look off.
 - A console summary.
@@ -73,7 +73,8 @@ The CSVs are UTF-8. In Excel, use Data → From Text/CSV so accents come through
 
 - **Sign:** `amount` is from your point of view. Negative means money out (spending, withdrawals, card purchases, interest, fees). Positive means money in (deposits, card payments/abonos, refunds).
 - **Savings:** `amount` is the VALOR column and `balance_after` is SALDO. Rows without a year (`d/mm`) get it from the statement period (DESDE/HASTA), including periods that cross into a new year. When the running SALDO disagrees with a row's sign, the sign is flipped and the row is marked `low`.
-- **Credit cards:** `amount` is the *Cargos y abonos* column, meaning what was billed this month. For a deferred purchase (cuota 1/12) that's the installment, and the full price goes in `original_amount`. Reconciliation tries two formulas: billed (`opening − Σamount = closing`) and total debt (new deferred purchases count at full value, later installments count as 0). `yes` means either one matched, and the `error` column says which.
+- **Credit cards:** `amount` is the purchase value (*Valor original*), recorded on the statement where the purchase first appears, so a purchase in 36 installments counts once at full price. What was billed this month (*Cargos y abonos*) is in `billed_amount`. Installment lines for purchases made before the statement period (cuota 4/12 dated earlier) get `amount` 0 so nothing is counted twice. Payments are the lines printed with a trailing `-` (e.g. `ABONO SUCURSAL VIRTUAL 72.00-`). A `VR MONEDA ORIG ...` line is appended to the purchase above it. Reconciliation: `Saldo anterior − Σamount = Pagos total − Saldo a favor`, within 1.00 because Bancolombia rounds *Pagos total* up to whole pesos/dollars.
+- **Empty statements:** a statement with no movements whose balances still add up is reported as `ok (no movements in period)`, not as a failure.
 - **Currency:** a short line with no amounts that contains `DOLARES`/`USD` switches the section to USD, and one with `PESOS` switches it back to COP.
 - **parse_confidence:** `high` = read from a detected PDF table; `medium` = regex line parser; `low` = year guessed from the filename, sign flipped, or the row disagrees with the running balance.
 - **merge flow_type:** `internal_transfer` if the description contains PAYONEER, WALLBIT, LEAD BANK, TRANSFERENCIA DESDE or ABONO INTERNACIONAL; `card_payment` for PAGO TARJETA/PAGO TC on any account, or ABONO/PAGO credits on a card; otherwise `spending` (negative) or `income` (positive). `needs_review=true` for low-confidence rows.
