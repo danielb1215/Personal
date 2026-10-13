@@ -21,8 +21,9 @@ writing anything to the Sheet, and finish with a short report of what failed.
 
 ## Steps
 
-1. **Code.** `cd` into the `danielb1215/Personal` checkout. If `tools/finances/monthly.py` is missing,
-   `git fetch origin main claude/amazing-gates-mpo7ev` and use whichever has it.
+1. **Code.** `cd` into the `danielb1215/Personal` checkout (the repo's default branch, currently
+   `claude/spec-kit-personal-ai-folder-se4e7v`). If `tools/finances/monthly.py` is missing there,
+   `git fetch origin claude/amazing-gates-mpo7ev` and check that branch out.
    Make a work folder `W` (scratchpad) with `W/inbox/`.
 
 2. **Ledger and balances.** `get_values` `Transactions!A1:R` (the result is saved to a file; copy that
