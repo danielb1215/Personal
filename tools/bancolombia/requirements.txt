@@ -1,0 +1,4 @@
+pikepdf>=8.0
+pdfplumber>=0.10
+# optional, only if you want to explore the CSVs in Python:
+# pandas>=2.0

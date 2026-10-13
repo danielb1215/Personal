@@ -1,0 +1,11 @@
+# Never commit statements or anything derived from them.
+*.pdf
+!tests/fixtures/*.pdf
+bancolombia_out/
+*_out/
+unlocked/
+text/
+*.csv
+.venv/
+__pycache__/
+.pytest_cache/
