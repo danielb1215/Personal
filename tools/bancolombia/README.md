@@ -27,16 +27,18 @@ pip install -r requirements.txt
 
 ## Run
 
-Point `--input` at the folder with the PDFs. With Google Drive for Desktop that's
-usually something like `~/Library/CloudStorage/GoogleDrive-<you>/My Drive/economics/Extractos Bancolombia`
-on macOS or `G:\My Drive\economics\Extractos Bancolombia` on Windows. A downloaded
-and extracted zip works too.
+By default the tool reads `/Users/danielbolivar/Personal/economics/Extractos Bancolombia`.
+To use another folder, pass `--input DIR` or set `BANCOLOMBIA_INPUT_DIR`. The repo's root
+`.gitignore` excludes `economics/Extractos Bancolombia/` so the statements can't be committed by accident.
 
-macOS / Linux (the leading space keeps the line out of shell history in most setups;
-or skip the variable and type the password at the prompt):
+macOS (it prompts for the password, hidden):
+```bash
+python bancolombia_extract.py
+```
+Or with the env var (the leading space keeps the line out of shell history in most setups):
 ```bash
  export BANCOLOMBIA_PDF_PASSWORD='...'
-python bancolombia_extract.py --input "/path/to/Extractos Bancolombia" --output ./bancolombia_out
+python bancolombia_extract.py --output ./bancolombia_out
 unset BANCOLOMBIA_PDF_PASSWORD
 ```
 

@@ -32,6 +32,8 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 PASSWORD_ENV = "BANCOLOMBIA_PDF_PASSWORD"
+INPUT_ENV = "BANCOLOMBIA_INPUT_DIR"
+DEFAULT_INPUT = Path("/Users/danielbolivar/Personal/economics/Extractos Bancolombia")
 TOLERANCE = Decimal("1.00")
 
 TXN_COLUMNS = [
@@ -1069,7 +1071,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         description="Unlock and parse password-protected Bancolombia PDF statements. "
                     f"The password is read from ${PASSWORD_ENV} or prompted for.")
-    ap.add_argument("--input", required=True, type=Path, help="folder containing the PDFs")
+    ap.add_argument("--input", type=Path, default=Path(os.environ.get(INPUT_ENV) or DEFAULT_INPUT),
+                    help=f"folder containing the PDFs (default: ${INPUT_ENV} or '{DEFAULT_INPUT}')")
     ap.add_argument("--output", default=Path("./bancolombia_out"), type=Path,
                     help="output folder (default: ./bancolombia_out)")
     ap.add_argument("--unlock-only", action="store_true", help="only write unlocked/ copies")
@@ -1084,7 +1087,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
     if not args.input.is_dir():
-        print(f"Input folder not found: {args.input}", file=sys.stderr)
+        print(f"Input folder not found: {args.input}\n"
+              f"Pass --input DIR or set ${INPUT_ENV}.", file=sys.stderr)
         return 2
     pdfs = find_pdfs(args.input, args.output, args.recursive)
     if not pdfs:

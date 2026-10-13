@@ -218,3 +218,10 @@ def test_merge_into(run, tmp_path):
     assert flows["ABONO INTERESES AHORROS"] == "income"
     run("--merge-into", str(unified))  # re-running must not duplicate rows
     assert len(read_csv(unified)) == 12
+
+
+def test_default_input_dir(monkeypatch):
+    monkeypatch.delenv(be.INPUT_ENV, raising=False)
+    assert be.build_arg_parser().parse_args([]).input == be.DEFAULT_INPUT
+    monkeypatch.setenv(be.INPUT_ENV, "/somewhere/else")
+    assert str(be.build_arg_parser().parse_args([]).input) == "/somewhere/else"

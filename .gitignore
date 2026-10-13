@@ -1,6 +1,10 @@
 # Keep finances private if sensitive — uncomment to exclude from git
 # ai/persona/finances.md
 
+# Bank statements and anything derived from them (tools/bancolombia reads these locally)
+economics/Extractos Bancolombia/
+bancolombia_out/
+
 # OS
 .DS_Store
 Thumbs.db
