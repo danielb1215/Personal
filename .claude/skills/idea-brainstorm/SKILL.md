@@ -1,17 +1,17 @@
 ---
 name: idea-brainstorm
-description: Daily brainstorm of side-business ideas for Daniel. Picks the next lens in a fixed rotation, researches it on the web, adds 3 new ideas to the business_ideas Google Sheet and logs the run. Use when Daniel asks for new business ideas, or when the daily scheduled brainstorm fires.
+description: Daily demand-first idea run for Daniel. Listens to one community a day (forums, blogs, social, app reviews, news), logs real complaints with links in the Pains tab of the business_ideas Google Sheet, and turns only repeated or paid-for pains into business ideas. Use when Daniel asks for new business ideas, pain points or demand research, or when the daily scheduled run fires.
 ---
 
-# Daily business idea brainstorm
+# Daily demand-first idea run
 
-Produces **3 new, concrete side-business ideas** a day for Daniel, each written as a row in the
-`business_ideas` Google Sheet. Ideas are not scored here; `/idea-rank` does that.
+Ideas come **from evidence of demand, not from Daniel's CV**. Each day:
 
-Daniel describes himself as not very creative at idea generation, so this skill does the
-divergent part for him: a different **lens** each day forces new territory, and web research
-grounds each idea in what people pay for today. Most lenses deliberately ignore his data job, so
-the backlog isn't just variations of data consulting.
+1. listen to one community where people complain, ask for help or say what they pay for,
+2. log every real pain with a link in the `Pains` tab,
+3. turn a pain into an idea only when it repeats or people already spend money on it.
+
+A day with good pains and no new idea is a good day. Never invent a pain to justify an idea.
 
 ## Fixed IDs
 
@@ -19,95 +19,95 @@ the backlog isn't just variations of data consulting.
 |---|---|
 | Sheet `business_ideas` | `1N0iOhnKfQDXhDDsYEAGle0jGTp9qMmpRIPL8AglxEIM` |
 | Link | https://docs.google.com/spreadsheets/d/1N0iOhnKfQDXhDDsYEAGle0jGTp9qMmpRIPL8AglxEIM |
-| Tabs | `Ideas` (one row per idea), `Ranking` (formula view, never write), `Rubric`, `Runs` (log) |
+| Tabs | `Ranking` (formula), `Ideas`, `Pains` (evidence), `Pain clusters` (formula), `Rubric`, `Runs` (log) |
 
 ## Rules
 
-- Only add rows. Never edit or delete existing rows in `Ideas` or `Runs`.
-- Never write to the `Ranking` tab or to `Ideas` column W (`score`): both are formulas.
-- Leave the score columns (N:V, X:Z) empty. Scoring is `/idea-rank`'s job.
+- Only add rows. Never edit or delete existing rows, except filling `idea_ids` (K) on `Pains` rows
+  that a new idea uses.
+- Never write to `Ranking`, `Pain clusters` or `Ideas` column X (`score`): they are formulas.
+- Every `Pains` row needs a real, working `source_url` you actually saw in a search result or page.
+  Put verbatim words in double quotes; otherwise start with `[paraphrase]`. No made-up quotes.
+- Prefer recent evidence (last 2 years). Vendor blogs and listicles that sell a fix are not evidence
+  of pain; forum posts, reviews, comments, job posts and news are.
 - Don't commit anything to the repo. The Sheet is the record.
 
 ## Steps
 
-1. **Context.** Read `ai/persona/profile.md`, `skills.md`, `hobbies.md` and `finances.md`.
-   The constraints in `finances.md` (10-15 h/week, async, revenue in 3-6 months, $2-3k MRR goal,
-   staged capital up to $5-10k) and the knockouts on the `Rubric` tab (A12:D17) are hard limits.
+1. **Context.** Read `ai/persona/finances.md` for the hard limits (10-15 h/week, async, revenue in
+   3-6 months, $2-3k/month goal, $5-10k staged capital) and the knockouts on `Rubric!A13:D18`.
+   Read the other persona files only at step 6, after the pains are collected, so they don't steer
+   what you look for.
 
-2. **Read the Sheet.** `get_values` on `Ideas!A:M` (existing ideas, to avoid duplicates and to find
-   the next empty row), `Runs!A:F` (past lenses) and `Ranking!A1:H11` (current top 10).
+2. **Read the Sheet.** `get_values` on `Pains!A:K`, `'Pain clusters'!A:D`, `Ideas!A:M`, `Runs!A:F`
+   and `Ranking!A1:H11`.
 
-3. **Pick the lens.** Take the last `Runs` row with type `brainstorm`, and use the next lens in the
-   table below (after 12, wrap to 1). If there are no brainstorm runs yet, or the last lens isn't in this table, start at 1. If the user
-   names a lens or topic, use that instead.
+3. **Pick where to listen.** Take the last `Runs` row with type `brainstorm` and use the next
+   community below (after 12, wrap to 1); if its `lens` isn't a community name from this table,
+   start at 1. If Daniel names a community, topic or pain, use that.
 
-   | # | Lens | Prompt to yourself |
+   | # | Community | Where to look |
    |---|---|---|
-   | 1 | Trends first | What is growing fast in 2026 (search trend reports, new platforms, regulation changes)? Find the businesses that growth creates before thinking about Daniel. |
-   | 2 | Colombia as an advantage | What can be made, run or hosted in Colombia and sold to people abroad: manufacturing, tourism, talent, a low cost base? |
-   | 3 | Cycling and outdoors | Products, travel, events, services or communities for riders, hikers and outdoor people. Not data services. |
-   | 4 | Water and travel | Diving, freediving, festivals, short-trip travel: what do people in those worlds pay for and complain about? |
-   | 5 | Buy instead of build | Small profitable businesses for sale (Flippa, Acquire, local businesses) that $5-10k could buy and he could grow. |
-   | 6 | Physical products | Private label, Colombian-made goods, accessories, consumables sold online. |
-   | 7 | Marketplaces and communities | Two groups he can reach that would pay to find each other. |
-   | 8 | AI-native products | Things only possible since cheap AI models: consumer apps, tools for small businesses, automations people pay for. |
-   | 9 | His own problems as a person | What annoys him as a cyclist, traveller, diver, USD earner in Colombia, gear owner? Who else has that problem? |
-   | 10 | Demand mining | Upwork and Contra posts, Reddit, Indie Hackers, review sites: repeated requests people say they would pay for. |
-   | 11 | Data and tech services | His day-job skills sold as consulting, audits or tools. Only this lens may produce data services. |
-   | 12 | Remix and inversions | Combine two existing ideas, aim the top-ranked idea at a new customer, or fix why a killed idea died. |
+   | 1 | Road cyclists and bike owners | Bike Forums, TrainerRoad forum, Weight Weenies, RoadBikeReview, Slowtwitch, BikeRadar and road.cc comments |
+   | 2 | Bike shops, brands and the bike trade | Bicycle Retailer, Bike Europe, BikeBiz, NBDA, shop-owner forums |
+   | 3 | Divers and freedivers | ScubaBoard, DeeperBlue, dive-travel reviews |
+   | 4 | Travellers and nomads in Latin America | Nomad List, travel forums, expat forums for Colombia and Mexico, TripAdvisor forums |
+   | 5 | Electronic music fans, DJs and promoters | Resident Advisor, DJ forums, festival reviews and news |
+   | 6 | Small online sellers | Shopify Community, Seller Central forums, ecommerce blogs' comment threads |
+   | 7 | Small businesses in Colombia and Latin America | Colombian business news, emprendimiento blogs, Mercado Libre seller forums |
+   | 8 | Freelancers and remote workers paid in USD | freelancer forums, Upwork Community, fintech reviews (Trustpilot) |
+   | 9 | Data and analytics people | dbt Discourse, Locally Optimistic, Hacker News, Stack Overflow |
+   | 10 | Hikers, campers and outdoor people | Backpacker forums, AllTrails reviews, outdoor gear reviews |
+   | 11 | App and software reviews | 1-3 star reviews on the App Store, Google Play, G2, Capterra, Trustpilot for popular tools in communities 1-10 |
+   | 12 | Endurance athletes and coaches | TrainerRoad, Slowtwitch, TrainingPeaks forum, running forums |
 
-4. **Research.** Run 3 to 5 web searches for the lens (standard mode), aimed at evidence of
-   spending: pricing pages, job posts with budgets, complaints about existing tools, revenue
-   reports from founders. Keep the URLs you actually use.
+4. **Mine for pain.** Run 6-10 web searches (standard mode; extended for niche or Spanish-language
+   sources) that pair the community with pain phrases, for example: `"is there an app"`,
+   `"I wish there was"`, `"I'd pay for"`, `"so frustrating"`, `"anyone else"`, `"how do you deal with"`,
+   `"alternative to"`, `"scam"`, `"waste of money"`, or in Spanish `"ojalá existiera"`, `"alguien sabe"`,
+   `"estafa"`, `"me cobraron"`. Search in Spanish for Colombian and Latin American communities.
+   If `WebFetch` or `curl` can open a thread, read it for exact quotes and reply counts.
+   Reddit, X and some forums are blocked in some environments; don't retry blocked hosts, use what
+   search returns.
 
-5. **Generate 3 ideas.** Draft about 8 privately from the lens and the research alone, before
-   checking them against Daniel's profile: start from a market, a trend or a problem, not from his CV.
-   Then keep the 3 that are most specific and most different from each other and from the existing
-   rows. Rules against anchoring on his CV:
-   - Outside lens 11, no idea may be a data, analytics or BI service, audit or dashboard.
-   - At least one of the 3 must be something a person without his data background could also run;
-     his advantage there comes from his life (Colombia, cycling, diving, travel, languages, USD
-     income, savings), not his job.
-   - Don't reuse phrases from his CV (job titles, "67.5%", tool names) in `why_daniel` unless the idea
-     truly depends on them.
-
-   Each kept idea must:
-   - name a specific customer ("Shopify brands doing $1-10M/year", not "businesses"),
-   - charge money in a clear way, with a price,
-   - have a first test Daniel can run within a week for under $100 (landing page, 10 outreach
-     messages, a post in a community, a pre-sale),
-   - not duplicate an existing row (same customer and same offer is a duplicate; a new customer
-     segment for an existing offer is fine if you say so in the pitch),
-   - pass every knockout on the `Rubric` tab.
-
-6. **Write the rows.** Find the first empty row after the last `idea_id` in `Ideas!A:A` and write
-   `A{n}:M{n+2}` with `update_values` (explicit range, not `append_values`). Columns:
+5. **Log pains.** Write 6-15 rows to the next empty rows of `Pains!A:K` with `update_values`:
 
    | Col | Field | How to fill |
    |---|---|---|
-   | A | idea_id | `I-YYMMDD-k`, k = 1, 2, 3 (today's date) |
-   | B | added | today as `YYYY-MM-DD` |
-   | C | lens | lens name from the table |
-   | D | title | under 70 characters |
-   | E | pitch | one or two sentences: what it is and who pays |
-   | F | customer | the specific buyer |
-   | G | problem | the pain, in the customer's terms |
-   | H | why_daniel | his unfair advantage: location, network, hobbies, languages, capital, or skills |
-   | I | revenue_model | retainer, subscription, one-off project, course, marketplace fee, etc. |
-   | J | price | e.g. `$1,500 one-off audit` or `$49/month`; prefix with `'` if it starts with `=` or looks like a number |
-   | K | first_test | the one-week, under-$100 test |
-   | L | sources | the URLs that support the idea, separated by spaces |
-   | M | status | `new` |
+   | A | pain_id | `P-YYMMDD-k`, k counting up from the day's last id |
+   | B | found | today, `YYYY-MM-DD` |
+   | C | community | who has the pain |
+   | D | pain | a short label in the customer's terms. Reuse an existing label exactly when it's the same pain, so `Pain clusters` counts it |
+   | E | what_they_said | verbatim in quotes, or `[paraphrase] ...`; include engagement (replies, votes) when known |
+   | F | source_url | the thread, review or article |
+   | G | source_type | forum, social, app review, blog, news, job post, video, conversation |
+   | H | posted_year | number, blank if unknown |
+   | I | paying_now | `yes` if they already pay or try to pay for a fix (tools, services, fees), `no`, or `unclear` |
+   | J | workaround | what they do today |
+   | K | idea_ids | leave blank unless an idea uses it |
 
-7. **Log the run.** Write one row to the next empty row of `Runs!A:F`:
-   `date, brainstorm, <lens>, <comma-separated idea_ids>, <search queries used, separated by ; >, <one line: what you noticed>`.
+6. **Turn strong pains into ideas.** Now read `ai/persona/profile.md`, `skills.md` and `hobbies.md`.
+   A pain qualifies when `Pain clusters` (after your writes) shows 3 or more pieces of evidence, or 2 with
+   `paying_now = yes`. For each qualifying pain without an idea yet, design 0-3 ideas:
+   - the idea must remove that pain for that community, priced against what they pay today;
+   - any business model is allowed (service, product, marketplace, physical goods, travel, software,
+     content, buying a business); don't default to data consulting;
+   - name a specific customer, a price, and a first test Daniel can run in a week for under $100;
+   - check the knockouts and his time and capital limits;
+   - no duplicates of existing `Ideas` rows (same customer and offer).
 
-8. **Verify.** `get_values` the rows you wrote and check every column landed where it should.
+   Write each idea to the next empty row of `Ideas!A:M` (A `I-YYMMDD-k`, B today, C `Pain: <pain label>`,
+   D title, E pitch, F customer, G problem in the customer's words, H his unfair advantage,
+   I revenue model, J price, K first test, L the pain_ids then key URLs separated by spaces, M `new`).
+   Fill `idea_ids` (K) on the `Pains` rows it uses. Leave scores to `/idea-rank`.
 
-9. **Report.** The final message (emailed to Daniel on scheduled runs) has:
-   - today's lens,
-   - the 3 ideas: title, pitch, price and first test, one short block each,
-   - the current top 3 from the `Ranking` tab with scores, and how many ideas are still unscored,
-   - the Sheet link, and a reminder that `/idea-rank` scores the new ideas.
+7. **Log the run.** Next empty row of `Runs!A:F`: `date, brainstorm, <community name>,
+   <idea_ids or blank>, <searches separated by ; >, <one line: strongest pain and how often it appeared>`.
 
-   Keep it short and plain; no tables wider than a phone screen.
+8. **Verify.** `get_values` the rows you wrote and `'Pain clusters'!A1:D15`; fix anything misplaced.
+
+9. **Report.** The final message (emailed on scheduled runs), short enough for a phone:
+   - today's community and the 3 strongest pains, each with one quote and link,
+   - pains that are getting close to qualifying (2 pieces of evidence),
+   - new ideas, if any: title, the pain behind it, price, first test,
+   - the current top 3 from `Ranking`, how many ideas are unscored, and the Sheet link.
