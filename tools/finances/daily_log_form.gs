@@ -15,26 +15,17 @@ const SHEET_ID = '1YeZ1p34fgsvv1sDIuNFrausv0FE0lFLG86AVsfwrdd8';
 const LOG_TAB = 'Daily log';
 const DATE_TITLE = 'Date (leave empty for today)';
 
-// Must match Budget!A13:A31 exactly.
+// Must match Budget!A13:A22 exactly.
 const CATEGORIES = [
   'Food at home',
-  'Restaurants',
-  'Food delivery',
-  'Health & insurance',
-  'Home utilities',
-  'Phone & internet',
-  'Subscriptions & software',
-  'Online shopping',
+  'Restaurants & delivery',
+  'Shopping',
   'Entertainment',
-  'Transport',
-  'Fuel & car',
+  'Transport & fuel',
   'Cycling & sport',
-  'Bills & online payments',
-  'Taxes',
-  'Bank fees',
   'Payouts to people',
-  'Annual policy (Coopserfun)',
   'Travel & big purchases',
+  'Fixed bills',
   'Other',
 ];
 
