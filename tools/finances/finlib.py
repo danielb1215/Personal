@@ -6,10 +6,13 @@ rebuild (build_full.py) and the monthly incremental sync (monthly.py).
 """
 import collections
 import csv
+import difflib
 import hashlib
 import json
+import os
 import re
 import statistics
+import unicodedata
 from datetime import date, datetime, timedelta
 
 COLS = ["txn_id", "date", "account", "currency", "amount", "amount_usd", "fx_note", "flow_type", "category",
@@ -413,6 +416,218 @@ def parse_wise(path, source_name):
             kw["flow_type"] = "fee"; kw["category"] = "Bank fees & interest"
         rows.append(new_row(**kw))
     return rows
+
+
+# ---------------------------------------------------------------- Apple Wallet export (tools/wallet_backup)
+# Columns: wallet_txn_id,date,time,card_name,card_last4,merchant,amount,currency,status,source[,billed_amount,billed_currency]
+# Wallet rows (APW-) stand in for card purchases until the card statement / Payoneer CSV covers them,
+# the way Bancolombia alert rows (BCE-) stand in for the savings statement. See reconcile_wallet.
+WALLET_CARDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wallet_cards.json")
+WALLET_NOTE = "from Apple Wallet, replaced by the statement row when it arrives"
+WALLET_PENDING = "Apple Wallet: pending"
+
+
+def _plain(s):
+    return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
+
+
+def wallet_account(card_name, last4, currency, rules):
+    """Ledger account for a Wallet card, None to ignore it, or False if no rule matches."""
+    for r in rules:
+        if _plain(r["name_contains"]) not in _plain(card_name):
+            continue
+        if r.get("last4") and r["last4"] != last4:
+            continue
+        if r.get("account") is None:
+            return None
+        if "{currency}" in r["account"]:
+            cur = currency if currency in r.get("currencies", [currency]) else r.get("default_currency", currency)
+            return r["account"].format(currency=cur)
+        if r.get("foreign_account") and currency != r.get("home_currency", currency):
+            return r["foreign_account"]
+        return r["account"]
+    return False
+
+
+def parse_wallet(path, source_name, cards_file=WALLET_CARDS):
+    """Returns (rows, skipped) where skipped counts rows per card label that matched no account."""
+    with open(cards_file) as f:
+        rules = json.load(f)["cards"]
+    rows, skipped = [], collections.Counter()
+    for r in csv.DictReader(open(path, encoding="utf-8-sig")):
+        if r["status"] == "declined":
+            continue
+        acct = wallet_account(r["card_name"], r["card_last4"], r["currency"], rules)
+        if not acct:
+            if acct is False:
+                skipped[f"{r['card_name']} ..{r['card_last4']}"] += 1
+            continue
+        a = num(r["amount"])
+        notes = [WALLET_NOTE]
+        if r["status"] == "pending":
+            notes.append(WALLET_PENDING)
+        kw = dict(txn_id=r["wallet_txn_id"], date=r["date"], account=acct, currency=r["currency"], amount=a,
+                  description=r["merchant"], counterparty=r["merchant"], flow_type="spending" if a < 0 else "refund",
+                  source_file=source_name, notes="; ".join(notes), _time=r.get("time", ""), _status=r["status"])
+        if r.get("billed_amount") and r.get("billed_currency"):
+            kw["est_other_ccy"] = f"{r['billed_currency']} {num(r['billed_amount']):,.2f} billed (Apple Wallet)"
+        if r["status"] not in ("settled", "pending", "refund"):
+            kw["needs_review"] = "Apple Wallet status not recognised - check this purchase in Wallet"
+        rows.append(new_row(**kw))
+    return rows, skipped
+
+
+def card_family(account):
+    """Accounts that hold the same card: 'Payoneer USD'/'Payoneer EUR' -> 'Payoneer', 'X (USD)' -> 'X'."""
+    if account.startswith("Payoneer "):
+        return "Payoneer"
+    return account[:-6] if account.endswith(" (USD)") else account
+
+
+def convert(amount, cur, to, month, cop_month, eur_month):
+    """amount in `cur` expressed in `to`, via USD with the monthly rates; None if a rate is missing."""
+    if cur == to:
+        return amount
+    cop, _ = _nearest(cop_month, month, 6)
+    eur, _ = _nearest(eur_month, month, 30)
+    usd = {"USD": lambda: amount, "COP": lambda: amount / cop if cop else None,
+           "EUR": lambda: amount * eur if eur else None}.get(cur, lambda: None)()
+    if usd is None:
+        return None
+    return {"USD": lambda: usd, "COP": lambda: usd * cop if cop else None,
+            "EUR": lambda: usd / eur if eur else None}.get(to, lambda: None)()
+
+
+_STOP = {"THE", "AND", "COM", "WWW", "BOGOTA", "COL", "COLOMBIA", "SAS", "LTDA", "PAYPAL", "INC", "LLC"}
+
+
+def merchant_similarity(a, b):
+    """0..1. Statements truncate and upper-case merchant names, Wallet cleans them up, so this takes
+    the best of a token-prefix overlap and a character ratio."""
+    def toks(s):
+        return {t[:5] for t in re.sub(r"[^A-Z0-9]+", " ", _plain(s).upper()).split() if len(t) >= 3 and t not in _STOP}
+    ta, tb = toks(a), toks(b)
+    tok = len(ta & tb) / min(len(ta), len(tb)) if ta and tb else 0.0
+    ca, cb = (re.sub(r"[^A-Z0-9]", "", _plain(s).upper()) for s in (a, b))
+    return max(tok, difflib.SequenceMatcher(None, ca, cb).ratio() if ca and cb else 0.0)
+
+
+BILLED = re.compile(r"^([A-Z]{3}) (-?[\d,]+\.?\d*) billed")
+
+
+def wallet_match(w, s, cop_month, eur_month):
+    """Score for 'statement row s is the same purchase as Wallet row w', or None.
+    Same card, same sign, date within 3 days, and an amount that agrees: within 1% in the same currency,
+    or within 8% after FX (bank rate and markup differ from the monthly median)."""
+    if card_family(w["account"]) != card_family(s["account"]) or (w["amount"] < 0) != (s["amount"] < 0):
+        return None
+    days = abs((dt(w["date"]) - dt(s["date"])).days)
+    if days > 3:
+        return None
+    amt, cur, tol = w["amount"], w["currency"], 0.01
+    m = BILLED.match(w.get("est_other_ccy") or "")
+    if cur != s["currency"] and m and m.group(1) == s["currency"]:
+        amt, cur = num(m.group(2)), m.group(1)
+    if cur != s["currency"]:
+        amt, tol = convert(amt, cur, s["currency"], s["date"][:7], cop_month, eur_month), 0.08
+        if amt is None:
+            return None
+    diff = abs(abs(amt) - abs(s["amount"])) / max(abs(s["amount"]), 0.01)
+    if diff > tol:
+        return None
+    sim = merchant_similarity(w["description"], s["description"])
+    if (tol > 0.01 or diff > 0.002) and sim < 0.3:   # inexact amount: the merchant has to agree too
+        return None
+    return (round(sim, 2), -days, -diff)
+
+
+def reconcile_wallet(ledger, new, cop_month, eur_month):
+    """Statement/CSV rows replace Apple Wallet rows. Mutates ledger rows in place and marks new rows
+    with _drop. Returns (updated ledger rows, stats)."""
+    wallet_new = [r for r in new if r["txn_id"].startswith("APW-")]
+    families = {card_family(r["account"]) for r in ledger + new if r["txn_id"].startswith("APW-")}
+    if not families:
+        return [], {}
+    stats = collections.Counter()
+    by_id = {r["txn_id"]: r for r in ledger}
+    open_w = [r for r in ledger if r["txn_id"].startswith("APW-")]
+    stmt = [r for r in new if not r["txn_id"].startswith(("APW-", "BCE-")) and not r.get("_drop")
+            and r["flow_type"] in ("spending", "refund") and card_family(r["account"]) in families]
+    covered = collections.defaultdict(str)
+    for r in ledger + new:
+        if not r["txn_id"].startswith(("APW-", "BCE-")) and card_family(r["account"]) in families:
+            f = card_family(r["account"])
+            covered[f] = max(covered[f], r["date"])
+    updated = {}
+
+    # 1. the nightly export overlaps the Sheet: rows already there are dropped (a pending one takes the settled amount)
+    for w in wallet_new:
+        old = by_id.get(w["txn_id"])
+        if old is None:
+            continue
+        w["_drop"] = True
+        if WALLET_PENDING in old["notes"] and w["_status"] != "pending":
+            old.update(date=w["date"], amount=w["amount"], amount_usd="", fx_note="",
+                       notes="; ".join(n for n in old["notes"].split("; ") if n != WALLET_PENDING))
+            updated[old["_row"]] = old
+            stats["pending_settled"] += 1
+    wallet_new = [w for w in wallet_new if not w.get("_drop")]
+
+    # 2. pair statement rows with Wallet rows, best scores first
+    pairs = []
+    for s in stmt:
+        for w in open_w + wallet_new:
+            sc = wallet_match(w, s, cop_month, eur_month)
+            if sc:
+                pairs.append((sc, id(s), id(w), s, w))
+    pairs.sort(key=lambda p: p[0], reverse=True)
+    used = set()
+    for _, si, wi, s, w in pairs:
+        if si in used or wi in used:
+            continue
+        used |= {si, wi}
+        if w.get("_row"):            # already in the Sheet: becomes the statement row, keeps your edits
+            other = "" if w["currency"] == s["currency"] else f"Apple Wallet {w['currency']} {abs(w['amount']):,.2f}"
+            notes = [n for n in w["notes"].split("; ") if n and n not in (WALLET_NOTE, WALLET_PENDING)]
+            w.update(txn_id=s["txn_id"], date=s["date"], account=s["account"], currency=s["currency"],
+                     amount=s["amount"], description=s["description"], counterparty=s["counterparty"],
+                     flow_type=s["flow_type"], source_file=s["source_file"], is_duplicate=s["is_duplicate"],
+                     est_other_ccy=other or s["est_other_ccy"], amount_usd="", fx_note="",
+                     notes="; ".join(notes + ["Apple Wallet row confirmed by statement"] + ([s["notes"]] if s["notes"] else [])))
+            if w["needs_review"].startswith("Apple Wallet"):
+                w["needs_review"] = ""
+            updated[w["_row"]] = w
+            s["_drop"] = True
+            stats["replaced"] += 1
+        else:                        # both arrived this month: the statement row wins
+            w["_drop"] = True
+            stats["same_run"] += 1
+
+    # 3. new Wallet rows inside a period a statement already covers, or already in Bancolombia alert emails
+    bce = [r for r in ledger + new if r["txn_id"].startswith("BCE-") and r["description"].startswith("COMPRA EN")]
+    for w in wallet_new:
+        if w.get("_drop"):
+            continue
+        if w["date"] <= covered[card_family(w["account"])]:
+            w["_drop"] = True
+            stats["inside_statement_period"] += 1
+            continue
+        if any(abs(b["amount"] - w["amount"]) < 1 and abs((dt(b["date"]) - dt(w["date"])).days) <= 3
+               and w["currency"] == b["currency"] and w["account"].startswith("Bancolombia") for b in bce):
+            w["_drop"] = True
+            stats["already_in_alert_emails"] += 1
+
+    # 4. Wallet rows in the Sheet that the statement period passed without a match
+    for w in open_w:
+        if id(w) in used or w["needs_review"]:
+            continue
+        end = covered[card_family(w["account"])]
+        if end and w["date"] <= (dt(end) - timedelta(days=3)).isoformat():
+            w["needs_review"] = ("Apple Wallet row not found in the statement/CSV - reversed, declined, "
+                                 "or posting next cycle?")
+            updated[w["_row"]] = w
+            stats["flagged"] += 1
+    return list(updated.values()), stats
 
 
 # ---------------------------------------------------------------- categories

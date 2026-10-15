@@ -1,0 +1,13 @@
+{
+  "_comment": "Apple does not document these codes. The values below are guesses until the probe output confirms them; then edit this file and set confirmed to true. Unknown status codes are exported as 'unknown', never dropped silently.",
+  "confirmed": false,
+  "amount_integer_scale": 10000,
+  "status": {
+    "_comment": "payment_transaction.transaction_status -> pending | settled | declined",
+    "0": "pending",
+    "1": "settled",
+    "2": "declined"
+  },
+  "refund_types": [],
+  "skip_types": []
+}

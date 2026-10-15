@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. README step 6 fills in __TOOL_DIR__ and __HOME__ and copies it to ~/Library/LaunchAgents/ -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.daniel.wallet-export</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__TOOL_DIR__/run_export.sh</string>
+    </array>
+    <!-- Every day at 06:15, after the overnight Wi-Fi backup. If the Mac is asleep then, it runs on wake. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>6</integer>
+        <key>Minute</key>
+        <integer>15</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/wallet-export.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/wallet-export.log</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

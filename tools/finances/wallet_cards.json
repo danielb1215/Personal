@@ -1,0 +1,12 @@
+{
+  "_comment": "Which ledger account each Apple Wallet card belongs to. First matching rule wins. name_contains is compared without case or accents against the card name Wallet shows; last4 (optional) must equal the card's last 4 digits. account may use {currency}. foreign_account is used when the purchase currency is not the card's home_currency. account null = ignore that card (e.g. the Bancolombia debit card: its purchases already come from the savings statement and alert emails). Cards that match no rule are skipped and listed in the sync summary.",
+  "cards": [
+    {"name_contains": "bogota", "account": "Banco de Bogotá Visa 2320", "home_currency": "COP"},
+    {"name_contains": "payoneer", "account": "Payoneer {currency}", "currencies": ["USD", "EUR"], "default_currency": "USD"},
+    {"name_contains": "bancolombia", "last4": "7380", "account": "Bancolombia Visa 7380", "home_currency": "COP", "foreign_account": "Bancolombia Visa 7380 (USD)"},
+    {"name_contains": "bancolombia", "last4": "6879", "account": "Bancolombia Mastercard 6879", "home_currency": "COP", "foreign_account": "Bancolombia Mastercard 6879 (USD)"},
+    {"name_contains": "bancolombia", "last4": "1326", "account": "Bancolombia Amex 1326", "home_currency": "COP", "foreign_account": "Bancolombia Amex 1326 (USD)"},
+    {"name_contains": "bancolombia", "last4": "1985", "account": "Bancolombia Amex 1985", "home_currency": "COP", "foreign_account": "Bancolombia Amex 1985 (USD)"},
+    {"name_contains": "bancolombia", "account": null}
+  ]
+}
