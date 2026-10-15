@@ -1,8 +1,8 @@
 """Monthly incremental sync for the finances_unified Google Sheet.
 
 The Sheet's Transactions tab is the ledger: rows already there are never rewritten,
-except to fill in a transfer match or to swap a Bancolombia alert-email row for the
-statement row it turned into. New rows are appended.
+except to fill in a transfer match or to swap a stand-in row for the statement row it turned
+into: Bancolombia alert emails (BCE-) and Apple Wallet card purchases (APW-). New rows are appended.
 
 Usage: python monthly.py WORK_DIR
 WORK_DIR/
@@ -11,7 +11,8 @@ WORK_DIR/
   bc_alerts.json         [{"id","date","text"}] Bancolombia alert emails (optional)
   statement_balances.json [{"account","balance","as_of","source"}] closing balances read from PDFs (optional)
   inbox/                 the month's files (Payoneer/Rippling/Wise CSV exports, transcribed
-                         wallbit*.csv and cc_bdb*.csv, Bancolombia transactions.csv)
+                         wallbit*.csv and cc_bdb*.csv, Bancolombia transactions.csv, and
+                         apple_wallet_transactions.csv from tools/wallet_backup)
 Writes WORK_DIR/out/: append.json, updates.json, balances_updates.json, fx_values.json,
 new_rows.csv, summary.md
 """
@@ -71,10 +72,13 @@ def sniff(path):
         return "bancolombia"
     if "TransferWise ID" in h or "Running Balance" in h:
         return "wise"
+    if h.startswith("wallet_txn_id,date,time,card_name"):
+        return "wallet"
     return None
 
 
 new, received, unknown_files = [], collections.defaultdict(list), []
+wallet_skipped = collections.Counter()
 inbox = os.path.join(WORK, "inbox")
 for f in sorted(os.listdir(inbox)) if os.path.isdir(inbox) else []:
     p = os.path.join(inbox, f)
@@ -91,6 +95,9 @@ for f in sorted(os.listdir(inbox)) if os.path.isdir(inbox) else []:
         rs = F.parse_bancolombia(p)
     elif kind == "wise":
         rs = F.parse_wise(p, f)
+    elif kind == "wallet":
+        rs, skipped = F.parse_wallet(p, f)
+        wallet_skipped.update(skipped)
     else:
         unknown_files.append(f)
         continue
@@ -131,6 +138,12 @@ if stmt_rows:
     for a in alert_not_in_stmt:
         a["needs_review"] = "alert email row not found in the Bancolombia statement - duplicate or reversed?"
         updates[a["_row"]] = a
+
+# Apple Wallet rows stand in for card purchases until the card statement / Payoneer CSV covers them
+cop0, _, eur0 = F.fx_tables(ledger)
+wallet_updates, wallet_stats = F.reconcile_wallet(ledger, new, cop0, eur0)
+for a in wallet_updates:
+    updates[a["_row"]] = a
 
 # Payoneer rows loaded before the stable IDs (PAY-CUR-YYYY-MM-DD-HHMMSS-n) are recognised by content.
 OLD_PAY = re.compile(r"^PAY-(USD|EUR)-(\d{4}-\d{2}-\d{2})-(\d{6})-\d+$")
@@ -185,6 +198,7 @@ for r in ledger:
 
 cop_month, cop_n, eur_month = F.fx_tables(combined)
 F.apply_usd(new, cop_month, eur_month, only_missing=True)
+F.apply_usd(wallet_updates, cop_month, eur_month, only_missing=True)
 new.sort(key=lambda r: (r["date"], r["account"], r["txn_id"]))
 
 # ---------------------------------------------------------------- outputs
@@ -269,6 +283,18 @@ if missing:
     L.append("- **Not received this month:** " + ", ".join(missing))
 if unknown_files:
     L.append("- Files I couldn't recognise (left in the inbox): " + ", ".join(unknown_files))
+if received["wallet"]:
+    WS = {"replaced": "Wallet rows replaced by statement rows",
+          "same_run": "Wallet rows already in this month's statements (not added)",
+          "pending_settled": "pending Wallet rows now settled",
+          "inside_statement_period": "Wallet rows skipped (a statement already covers those days)",
+          "already_in_alert_emails": "Wallet rows skipped (already in Bancolombia alert emails)",
+          "flagged": "Wallet rows missing from the statement (flagged)"}
+    L.append("- Apple Wallet: " + (", ".join(f"{WS[k]}: {v}" for k, v in wallet_stats.items() if v)
+                                   or "nothing to reconcile"))
+if wallet_skipped:
+    L.append("- Wallet cards with no ledger account in wallet_cards.json (skipped): "
+             + ", ".join(f"{k} ({v} rows)" for k, v in wallet_skipped.items()))
 if focus:
     L += ["", f"## Spending in {focus} from the new rows (USD)", ""]
     for c, v in sorted(spend.items(), key=lambda kv: kv[1]):

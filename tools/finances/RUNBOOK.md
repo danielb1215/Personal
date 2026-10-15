@@ -32,7 +32,8 @@ writing anything to the Sheet, and finish with a short report of what failed.
 
 3. **Inbox files.** `search_files` with `parentId = '1vTMiK66f-5K8pcthbNfMyp_hh0QBuTkw'` (skip folders).
    For each file:
-   - **CSV** (Payoneer, Rippling, Wise, or the Bancolombia `transactions.csv` from Daniel's local tool):
+   - **CSV** (Payoneer, Rippling, Wise, the Bancolombia `transactions.csv` from Daniel's local tool, or
+     `apple_wallet_transactions.csv` from his Mac's nightly Wallet export):
      `download_file_content`, then `python3 tools/finances/decode.py <saved result or base64 file> W/inbox/<title>`.
    - **Wallbit statement PDF:** `read_file_content`, transcribe every movement into
      `W/inbox/wallbit_<YYYY-MM>.csv` with header
@@ -58,7 +59,11 @@ writing anything to the Sheet, and finish with a short report of what failed.
 
 5. **Run.** `cd tools/finances && python3 monthly.py W`. Read `W/out/summary.md` and skim
    `W/out/new_rows.csv`. Stop and report instead of writing if it would append more than 600 rows,
-   or if the same transaction appears twice.
+   or if the same transaction appears twice. In particular, a card purchase must not appear both as
+   an `APW-` row and as a statement/Payoneer row; `updates.json` is where Wallet rows turn into
+   statement rows. Copy the summary's "Apple Wallet" and "Wallet cards with no ledger account"
+   lines into the report. If `apple_wallet_transactions.csv` is missing or its newest date is more
+   than 5 days old, say so in the report (the Mac's nightly export or the iPhone backup has stopped).
 
 6. **Write to the Sheet.**
    - `append_values` range `Transactions!A1` with the `values` from `W/out/append.json`

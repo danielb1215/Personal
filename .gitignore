@@ -11,3 +11,8 @@ Thumbs.db
 
 # Python
 __pycache__/
+.venv/
+
+# Local finance exports (never commit real data)
+tools/wallet_backup/out/
+apple_wallet_transactions.csv
