@@ -13,14 +13,30 @@ Find a sustainable side business or income stream that:
 ## Process
 
 1. **Persona complete** → Fill in `../persona/` files (hobbies, finances, values)
-2. **Idea generation** → Use `/speckit-specify` to brainstorm based on persona context
-3. **Validation** → Research each idea for market size, competition, and fit
-4. **Planning** → Use `/speckit-plan` + `/speckit-tasks` to build execution roadmap
-5. **Execute** → Track progress in `ideas/` and `experiments/` folders
+2. **Daily brainstorm** → A scheduled run every morning uses `/idea-brainstorm` to add 3 ideas to the
+   [`business_ideas`](https://docs.google.com/spreadsheets/d/1N0iOhnKfQDXhDDsYEAGle0jGTp9qMmpRIPL8AglxEIM) Sheet,
+   rotating through 12 lenses (own-job pain, tool ecosystems, cost cutting, AI, verticals, LatAm, hobbies,
+   content, demand mining, unbundling, Bogotá local, remix)
+3. **Rank** → `/idea-rank` researches and scores unscored ideas on the weighted rubric; the Sheet's `Ranking` tab sorts them
+4. **Shortlist** → Ideas that score 75+ with medium confidence get a file in `ideas/` and `/speckit-specify`
+5. **Planning** → Use `/speckit-plan` + `/speckit-tasks` to build execution roadmap
+6. **Execute** → Track progress in `ideas/` and `experiments/` folders
+
+## The `business_ideas` Sheet
+
+| Tab | What it holds |
+|---|---|
+| `Ranking` | Sorted view of scored ideas (formula; killed ideas hidden) |
+| `Ideas` | One row per idea: A:M written by the brainstorm, N:V and X:Z by the ranking, W = score (formula) |
+| `Rubric` | The 8 criteria, their weights (blue, editable) and 1/3/5 anchors, plus knockouts |
+| `Runs` | Log of every brainstorm and ranking run |
+
+Score = weighted average of the 1-5 criterion scores, scaled to 0-100. Changing a weight on `Rubric`
+re-ranks every idea instantly.
 
 ## Folders
 
-- `ideas/` — brainstormed business ideas with initial analysis
+- `ideas/` — shortlisted business ideas with deeper analysis (the full backlog lives in the Sheet)
 - `experiments/` — active experiments / MVPs being tested
 - `research/` — market research, competitor analysis, pricing data
 

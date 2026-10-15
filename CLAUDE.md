@@ -35,6 +35,14 @@ Read it with the Google Sheets connector (connect it at claude.ai/customize/conn
 - Dashboard (reads the Sheet): https://claude.ai/artifact/X45ZBs1U67E9in6MeZHf9P
 - How the data is built and kept up to date: `tools/finances/README.md`. A scheduled run on the 6th follows `tools/finances/RUNBOOK.md`.
 
+## Business Ideas Pipeline
+
+- Backlog and ranking live in the Google Sheet **`business_ideas`**:
+  https://docs.google.com/spreadsheets/d/1N0iOhnKfQDXhDDsYEAGle0jGTp9qMmpRIPL8AglxEIM
+- `/idea-brainstorm` — adds 3 ideas using the next lens in the rotation (runs daily as a scheduled task)
+- `/idea-rank` — scores unscored ideas against the `Rubric` tab; pass idea ids, `all` or `stale` to re-score
+- See `ai/entrepreneurship/README.md` for the full process.
+
 ## Spec-Kit Skills Available
 
 - `/speckit-specify` — define a business idea as a spec
