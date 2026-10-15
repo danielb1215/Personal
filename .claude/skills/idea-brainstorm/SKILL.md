@@ -10,7 +10,8 @@ Produces **3 new, concrete side-business ideas** a day for Daniel, each written 
 
 Daniel describes himself as not very creative at idea generation, so this skill does the
 divergent part for him: a different **lens** each day forces new territory, and web research
-grounds each idea in what people pay for today.
+grounds each idea in what people pay for today. Most lenses deliberately ignore his data job, so
+the backlog isn't just variations of data consulting.
 
 ## Fixed IDs
 
@@ -37,30 +38,40 @@ grounds each idea in what people pay for today.
    the next empty row), `Runs!A:F` (past lenses) and `Ranking!A1:H11` (current top 10).
 
 3. **Pick the lens.** Take the last `Runs` row with type `brainstorm`, and use the next lens in the
-   table below (after 12, wrap to 1). If there are no brainstorm runs yet, start at 1. If the user
+   table below (after 12, wrap to 1). If there are no brainstorm runs yet, or the last lens isn't in this table, start at 1. If the user
    names a lens or topic, use that instead.
 
    | # | Lens | Prompt to yourself |
    |---|---|---|
-   | 1 | Own-job pain | What costs data teams like his hours or money every week? Productize the fix, with no Crowd Cow data, code or clients. |
-   | 2 | Tool ecosystems | Gaps around dbt, BigQuery, Looker, Fivetran, Datastream: missing packages, plugins, audits, migrations, templates. |
-   | 3 | Cost cutting as a service | He cut data-ops costs 67.5% in a Snowflake to BigQuery migration. Who overpays for warehouses, ETL or BI seats now? |
-   | 4 | AI and agents | What do small companies need now that LLMs, agents and MCP exist: data prep for AI, MCP servers, LLM pipelines, evals? |
-   | 5 | Underserved verticals | Industries with data but no analysts: DTC e-commerce, subscriptions, gyms, clinics, restaurants, agencies, especially in LatAm. |
-   | 6 | LatAm arbitrage | US prices with a Bogotá cost base; bilingual delivery; LatAm companies adopting a modern data stack; nearshore teams. |
-   | 7 | Hobbies x data | Cycling, scuba, freediving, hiking, house and techno festivals, travel: data products or tools for those communities. |
-   | 8 | Content and education | Courses, cohort classes, templates, newsletters or YouTube in Spanish or English on data engineering and analytics. |
-   | 9 | Demand mining | Search Upwork and Contra job posts, r/dataengineering, r/analytics, Indie Hackers for repeated requests people pay for. |
-   | 10 | Unbundle a winner | Find a profitable micro-SaaS or agency in data or analytics and design a narrower, cheaper version for one niche. |
-   | 11 | Bogotá local | Physical-world businesses in Bogotá that a data-minded operator could run part-time (like the B2B coffee idea). |
-   | 12 | Remix | Combine two existing ideas, aim the top-ranked idea at a new customer, or fix why a killed idea died. |
+   | 1 | Trends first | What is growing fast in 2026 (search trend reports, new platforms, regulation changes)? Find the businesses that growth creates before thinking about Daniel. |
+   | 2 | Colombia as an advantage | What can be made, run or hosted in Colombia and sold to people abroad: manufacturing, tourism, talent, a low cost base? |
+   | 3 | Cycling and outdoors | Products, travel, events, services or communities for riders, hikers and outdoor people. Not data services. |
+   | 4 | Water and travel | Diving, freediving, festivals, short-trip travel: what do people in those worlds pay for and complain about? |
+   | 5 | Buy instead of build | Small profitable businesses for sale (Flippa, Acquire, local businesses) that $5-10k could buy and he could grow. |
+   | 6 | Physical products | Private label, Colombian-made goods, accessories, consumables sold online. |
+   | 7 | Marketplaces and communities | Two groups he can reach that would pay to find each other. |
+   | 8 | AI-native products | Things only possible since cheap AI models: consumer apps, tools for small businesses, automations people pay for. |
+   | 9 | His own problems as a person | What annoys him as a cyclist, traveller, diver, USD earner in Colombia, gear owner? Who else has that problem? |
+   | 10 | Demand mining | Upwork and Contra posts, Reddit, Indie Hackers, review sites: repeated requests people say they would pay for. |
+   | 11 | Data and tech services | His day-job skills sold as consulting, audits or tools. Only this lens may produce data services. |
+   | 12 | Remix and inversions | Combine two existing ideas, aim the top-ranked idea at a new customer, or fix why a killed idea died. |
 
 4. **Research.** Run 3 to 5 web searches for the lens (standard mode), aimed at evidence of
    spending: pricing pages, job posts with budgets, complaints about existing tools, revenue
    reports from founders. Keep the URLs you actually use.
 
-5. **Generate 3 ideas.** Draft about 8 privately, then keep the 3 that are most specific and best
-   fit Daniel. Each kept idea must:
+5. **Generate 3 ideas.** Draft about 8 privately from the lens and the research alone, before
+   checking them against Daniel's profile: start from a market, a trend or a problem, not from his CV.
+   Then keep the 3 that are most specific and most different from each other and from the existing
+   rows. Rules against anchoring on his CV:
+   - Outside lens 11, no idea may be a data, analytics or BI service, audit or dashboard.
+   - At least one of the 3 must be something a person without his data background could also run;
+     his advantage there comes from his life (Colombia, cycling, diving, travel, languages, USD
+     income, savings), not his job.
+   - Don't reuse phrases from his CV (job titles, "67.5%", tool names) in `why_daniel` unless the idea
+     truly depends on them.
+
+   Each kept idea must:
    - name a specific customer ("Shopify brands doing $1-10M/year", not "businesses"),
    - charge money in a clear way, with a price,
    - have a first test Daniel can run within a week for under $100 (landing page, 10 outreach
@@ -81,7 +92,7 @@ grounds each idea in what people pay for today.
    | E | pitch | one or two sentences: what it is and who pays |
    | F | customer | the specific buyer |
    | G | problem | the pain, in the customer's terms |
-   | H | why_daniel | which of his skills, experience or network makes him credible |
+   | H | why_daniel | his unfair advantage: location, network, hobbies, languages, capital, or skills |
    | I | revenue_model | retainer, subscription, one-off project, course, marketplace fee, etc. |
    | J | price | e.g. `$1,500 one-off audit` or `$49/month`; prefix with `'` if it starts with `=` or looks like a number |
    | K | first_test | the one-week, under-$100 test |

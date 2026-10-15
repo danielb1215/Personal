@@ -15,8 +15,9 @@ Find a sustainable side business or income stream that:
 1. **Persona complete** → Fill in `../persona/` files (hobbies, finances, values)
 2. **Daily brainstorm** → A scheduled run every morning uses `/idea-brainstorm` to add 3 ideas to the
    [`business_ideas`](https://docs.google.com/spreadsheets/d/1N0iOhnKfQDXhDDsYEAGle0jGTp9qMmpRIPL8AglxEIM) Sheet,
-   rotating through 12 lenses (own-job pain, tool ecosystems, cost cutting, AI, verticals, LatAm, hobbies,
-   content, demand mining, unbundling, Bogotá local, remix)
+   rotating through 12 lenses (trends, Colombia as an advantage, cycling and outdoors, water and travel,
+   buying a business, physical products, marketplaces, AI-native products, his own problems, demand mining,
+   data services, remix). Only one lens produces data services, so the backlog isn't all consulting
 3. **Rank** → `/idea-rank` researches and scores unscored ideas on the weighted rubric; the Sheet's `Ranking` tab sorts them
 4. **Shortlist** → Ideas that score 75+ with medium confidence get a file in `ideas/` and `/speckit-specify`
 5. **Planning** → Use `/speckit-plan` + `/speckit-tasks` to build execution roadmap
