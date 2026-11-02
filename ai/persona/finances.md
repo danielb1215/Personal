@@ -14,7 +14,8 @@
 - End-to-end path: Rippling (USD) → Wallbit (USD, no fee) → Colombian bank account (COP)
 - **Real cost is in the FX rate, not the fee** (checked 2026-11-02 against the official TRM):
   Wallbit → Bancolombia got on average **~1.9% below TRM** (5 transfers Jun–Sep 2026, range 0.8%–3.0%).
-  Payoneer → Bancolombia (the route before Jun 2026) was ~2.4–2.7% below TRM.
+  Payoneer → Bancolombia (the route before Jun 2026): 8 transfers Feb–Jun 2026, $7,346.93 → **2.80% below TRM**
+  ($205.84; 2% fee + ~0.8% spread; range 1.1%–4.1%), plus a $29.95/yr maintenance fee.
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
 - **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
