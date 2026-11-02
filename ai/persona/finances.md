@@ -24,6 +24,9 @@
   (US accounts) arrived to the cent = $0 fee. Break-even vs Wise (with Bancolombia ~0.6%): total SWIFT fees must be
   < $1.95 + 0.76% of the amount (≈$21 on $2,500, ≈$78 on $10,000). Beats ARQ only if fees < ~$3 + 0.1%.
   Rippling emails (up to Mar 2026) say Balance funds are held max 30 days, then auto-withdrawn.
+  **Actual Rippling quote 2026-11-02: Bank Transfer to Bancolombia, $2,600 → fee $20.00, $2,580 arrives, 1–3 business days.**
+  With Bancolombia's ~0.6% conversion ≈ $35 (1.37%) on $2,600 vs Wise $37 (1.44%), Wallbit $44–60, ARQ ~$16 (est.).
+  Flat fee → better the bigger the transfer (~0.8% at $10k). Intermediary deductions still unverified — test once.
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
 - **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
