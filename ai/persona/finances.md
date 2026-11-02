@@ -19,6 +19,11 @@
   **Bancolombia converted USD→COP ~0.8% below TRM** (typically 0.4–0.9%; no separate receiving fee in the statements).
   Sending USD to Bancolombia another way isn't cheaper today: Wallbit SWIFT = 1% (min $25); Wise only pays COP to
   Colombia; Rippling SWIFT direct = fee unknown + $20–55 intermediary fees (only worth checking for large lumps).
+- **Rippling SWIFT to Bancolombia (checked 2026-11-02):** Rippling publishes no fee; it's shown only in the app's
+  withdrawal screen. Third-party estimates: $15–50 per SWIFT incl. intermediaries. Rippling → Wallbit/Payoneer/Wise
+  (US accounts) arrived to the cent = $0 fee. Break-even vs Wise (with Bancolombia ~0.6%): total SWIFT fees must be
+  < $1.95 + 0.76% of the amount (≈$21 on $2,500, ≈$78 on $10,000). Beats ARQ only if fees < ~$3 + 0.1%.
+  Rippling emails (up to Mar 2026) say Balance funds are held max 30 days, then auto-withdrawn.
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
 - **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
