@@ -34,7 +34,11 @@
   $4,904.67 → **$112.67 lost to the rate (2.30%)**, from 0.1% to 3.8% per transfer (the Nov 2 one alone: $53.30).
   Plus ~$84–113 estimated on $4,940 of local payouts to other people (Fer, Luisa, Maribel, Valeria, Mauricio;
   their COP amounts aren't in the statements) and a $9.84 "Balance adjustment (debit)" on 2026-08-07.
-  **≈ $205–235 in ~5 months on ~$9,850 moved.** Unexplained: PSE 99,697 COP to "Pexto Capital SAS" on 2026-10-07.
+  **≈ $205–235 in ~5 months on ~$9,850 moved.** (PSE 99,697 COP to "Pexto Capital SAS" on 2026-10-07 is the
+  Movistar bill paid through Pexto's collection service — not a Wallbit cost; the Sheet files it as internal_transfer.)
+- **Wise fee check (2026-11-02):** $21.02 on $1,400 from USD balance = 1.50% is from Daniel's own quote (rate 3,229.50,
+  locked). Not yet confirmed: how the % changes with amount (fixed + variable fee). TRM that day was 3,182.99, so on the
+  TRM basis Wallbit's Nov 2 cost was ~2.4% (not 3.8%). Wise caps sends to Colombia at ~$2,900 per transfer.
 
 ## Legal / Tax Status
 
