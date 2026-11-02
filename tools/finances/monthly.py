@@ -71,6 +71,8 @@ def sniff(path):
         return "bancolombia"
     if "TransferWise ID" in h or "Running Balance" in h:
         return "wise"
+    if h.startswith("Fecha,Descripci"):
+        return "bancolombia_movements"
     return None
 
 
@@ -78,7 +80,8 @@ new, received, unknown_files = [], collections.defaultdict(list), []
 inbox = os.path.join(WORK, "inbox")
 for f in sorted(os.listdir(inbox)) if os.path.isdir(inbox) else []:
     p = os.path.join(inbox, f)
-    kind = sniff(p) if f.lower().endswith(".csv") else None
+    kind = sniff(p) if f.lower().endswith(".csv") else \
+        "bancolombia_movements" if f.lower().endswith(".xlsx") and "bancolombia" in f.lower() else None
     if kind == "payoneer":
         rs = F.parse_payoneer(p, f)
     elif kind == "rippling":
@@ -91,6 +94,8 @@ for f in sorted(os.listdir(inbox)) if os.path.isdir(inbox) else []:
         rs = F.parse_bancolombia(p)
     elif kind == "wise":
         rs = F.parse_wise(p, f)
+    elif kind == "bancolombia_movements":
+        rs = F.parse_bc_movements(p, f)
     else:
         unknown_files.append(f)
         continue
@@ -106,13 +111,37 @@ if os.path.exists(os.path.join(WORK, "bc_alerts.json")):
     alert_rows, unparsed_alerts, foreign_alerts = F.parse_bc_alerts(os.path.join(WORK, "bc_alerts.json"))
     received["bancolombia alerts"].append(f"{len(alert_rows)} movements")
     alert_rows = [r for r in alert_rows if r["date"] > stmt_end]
+
+# Bancolombia online movements export: complete for the days it covers, so it wins over alert emails there.
+# Movements already in the sheet as alert rows are skipped; the rest are appended as provisional BCM- rows.
+mov_rows = [r for r in new if r["txn_id"].startswith("BCM-")]
+mov_dup, alert_not_in_export = 0, []
+if mov_rows:
+    new = [r for r in new if not r["txn_id"].startswith("BCM-")]
+    mov_rows = [r for r in mov_rows if r["date"] > stmt_end and r["txn_id"] not in ledger_ids]
+if mov_rows:
+    mov_first, mov_last = min(r["date"] for r in mov_rows), max(r["date"] for r in mov_rows)
+    alert_rows = [r for r in alert_rows if r["date"] > mov_last]
+    open_alerts = [a for a in ledger if a["txn_id"].startswith("BCE-") and mov_first <= a["date"] <= mov_last]
+    taken = set()
+    for m in sorted(mov_rows, key=lambda r: r["date"]):
+        cand = [a for a in open_alerts if id(a) not in taken and abs(a["amount"] - m["amount"]) < 1
+                and abs((F.dt(a["date"]) - F.dt(m["date"])).days) <= 3]
+        if cand:
+            taken.add(id(min(cand, key=lambda a: abs((F.dt(a["date"]) - F.dt(m["date"])).days))))
+            m["_drop"] = True
+            mov_dup += 1
+    alert_not_in_export = [a for a in open_alerts if id(a) not in taken]
+    received["bancolombia movements export"].append(f"{len(mov_rows) - mov_dup} new movements, "
+                                                    f"{mov_dup} already in the sheet from alert emails")
+    new += [r for r in mov_rows if not r.get("_drop")]
 new += alert_rows
 
 # A new Bancolombia statement replaces the alert rows already in the sheet for its period
 updates = {}
 superseded, alert_not_in_stmt = 0, []
 if stmt_rows:
-    open_alerts = [r for r in ledger if r["txn_id"].startswith("BCE-") and r["date"] <= stmt_end]
+    open_alerts = [r for r in ledger if r["txn_id"].startswith(F.PROVISIONAL_BC) and r["date"] <= stmt_end]
     taken = set()
     for s in sorted(stmt_rows, key=lambda r: r["date"]):
         cand = [a for a in open_alerts if id(a) not in taken and abs(a["amount"] - s["amount"]) < 1
@@ -122,8 +151,7 @@ if stmt_rows:
         a = min(cand, key=lambda a: abs((F.dt(a["date"]) - F.dt(s["date"])).days))
         taken.add(id(a))
         a.update(txn_id=s["txn_id"], date=s["date"], description=s["description"], source_file=s["source_file"],
-                 notes=a["notes"].replace("from alert email; replaced by the statement row when the quarterly "
-                                          "statement arrives", "alert email confirmed by statement").strip("; "))
+                 notes=F.PROVISIONAL_NOTE.sub(lambda m: m.group(1) + " confirmed by statement", a["notes"]).strip("; "))
         updates[a["_row"]] = a
         s["_drop"] = True
         superseded += 1
@@ -131,23 +159,28 @@ if stmt_rows:
     for a in alert_not_in_stmt:
         a["needs_review"] = "alert email row not found in the Bancolombia statement - duplicate or reversed?"
         updates[a["_row"]] = a
+for a in alert_not_in_export:
+    if a["_row"] not in updates and not a["needs_review"]:
+        a["needs_review"] = "alert email row not found in the Bancolombia movements export - duplicate or reversed?"
+        updates[a["_row"]] = a
 
 # Payoneer rows loaded before the stable IDs (PAY-CUR-YYYY-MM-DD-HHMMSS-n) are recognised by content.
 OLD_PAY = re.compile(r"^PAY-(USD|EUR)-(\d{4}-\d{2}-\d{2})-(\d{6})-\d+$")
+squash = lambda t: re.sub(r"\s+", " ", t).strip()  # the Sheet collapses repeated spaces in descriptions
 pay_seen = collections.Counter()
 for r in ledger:
     m = OLD_PAY.match(r["txn_id"])
     if m:
         t = m.group(3)
         r["_time"] = f"{t[:2]}:{t[2:4]}:{t[4:]}"
-        pay_seen[(r["currency"], r["date"], r["_time"], round(r["amount"], 2), r["description"])] += 1
+        pay_seen[(r["currency"], r["date"], r["_time"], round(r["amount"], 2), squash(r["description"]))] += 1
 seen = set(ledger_ids) | {a["txn_id"] for a in updates.values()}
 fresh = []
 for r in new:
     if r.get("_drop") or r["txn_id"] in seen:
         continue
     if r["txn_id"].startswith("PAY-"):
-        k = (r["currency"], r["date"], r["_time"], round(r["amount"], 2), r["description"])
+        k = (r["currency"], r["date"], r["_time"], round(r["amount"], 2), squash(r["description"]))
         if pay_seen[k] > 0:
             pay_seen[k] -= 1
             continue
@@ -224,17 +257,18 @@ if r:
     bal["Wise"] = (r["_balance"], r["date"], "Wise statement running balance")
 if stmt_rows:
     last = max(stmt_rows, key=lambda x: x["date"])
-    alerts_after = [x for x in new if x["txn_id"].startswith("BCE-") and x["date"] > stmt_end]
+    alerts_after = [x for x in new if x["txn_id"].startswith(F.PROVISIONAL_BC) and x["date"] > stmt_end]
     b = last["_balance"] + sum(x["amount"] for x in alerts_after)
     bal["Bancolombia savings 6948"] = (round(b, 2), max([stmt_end] + [x["date"] for x in alerts_after]),
                                        "Bancolombia statement closing balance + alert emails since")
-elif alert_rows and "Bancolombia savings 6948" in current:
+elif (alert_rows or mov_rows) and "Bancolombia savings 6948" in current:
     c = current["Bancolombia savings 6948"]
-    added = [x for x in new if x["txn_id"].startswith("BCE-")]
+    added = [x for x in new if x["txn_id"].startswith(F.PROVISIONAL_BC)]
     if added:
         b = F.num(c[3]) + sum(x["amount"] for x in added)
-        bal["Bancolombia savings 6948"] = (round(b, 2), max(x["date"] for x in added),
-                                           "previous balance + alert emails (interest and fees arrive with the quarterly statement)")
+        src = ("previous balance + online movements export" + (" + alert emails since" if alert_rows else "")
+               if mov_rows else "previous balance + alert emails (interest and fees arrive with the quarterly statement)")
+        bal["Bancolombia savings 6948"] = (round(b, 2), max(x["date"] for x in added), src)
 sb = os.path.join(WORK, "statement_balances.json")
 if os.path.exists(sb):
     for x in json.load(open(sb)):
@@ -246,6 +280,8 @@ for acct, (b, as_of, src) in bal.items():
     if not row:
         bal_missing.append(acct)
         continue
+    if as_of < (current[acct][4] if len(current[acct]) > 4 else ""):
+        continue  # never move a balance back to an older date
     bal_updates.append({"range": f"Balances!D{row}:E{row}", "values": [[b, as_of]]})
     bal_updates.append({"range": f"Balances!G{row}", "values": [[src + f" (updated {date.today().isoformat()})"]]})
 json.dump(bal_updates, open(os.path.join(OUT, "balances_updates.json"), "w"))

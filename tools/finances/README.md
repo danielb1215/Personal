@@ -17,6 +17,8 @@ statement and drop its `transactions.csv` in the same folder. It checks the clos
 picks up the interest and fees that the alert emails don't mention.
 
 Bancolombia day to day needs nothing: its alert emails are read automatically.
+Optional: the app's "Movimientos" export (`MovimientosTusCuentasBancolombia<fecha>.xlsx`) is also
+accepted. It covers the last ~30 days, interest and fees included, and wins over the alert emails for those days.
 
 On the 6th a scheduled Claude run follows [RUNBOOK.md](RUNBOOK.md), appends the new rows,
 updates balances and FX rates, moves the files to `inbox/processed`, and emails a summary.

@@ -47,10 +47,14 @@ writing anything to the Sheet, and finish with a short report of what failed.
      `python3 tools/finances/validate.py bdb <file>` and check the totals against the PDF summary.
      Add the amount to pay to `W/statement_balances.json`:
      `[{"account": "Banco de Bogotá Visa 2320", "balance": -<total a pagar>, "as_of": "<cut date>", "source": "card statement cut <date>, due <date>"}]`.
+   - **Bancolombia movements export** (`MovimientosTusCuentasBancolombia*.xlsx`): `download_file_content`, decode
+     into `W/inbox/` keeping the name. `monthly.py` reads it directly (rows get `BCM-` ids, provisional like alerts).
+   - **Wallbit app screenshot instead of the statement:** transcribe it the same way (failed rows amount 0), use
+     `scr-YYYYMMDDx` as `operation_id`, and say in the note that it comes from a screenshot.
    - **Anything else, or a PDF that comes back empty/encrypted:** leave it in the inbox and list it in the report.
 
 4. **Bancolombia alert emails.** Find the latest date among `Transactions` rows whose `txn_id` starts
-   with `BCE-` or `BC-` and account `Bancolombia savings 6948`; go back 3 days. Gmail `search_threads`
+   with `BCE-`, `BCM-` or `BC-` and account `Bancolombia savings 6948`; go back 3 days. Gmail `search_threads`
    with `from:(notificacionesbancolombia.com OR alertasynotificaciones@bancolombia.com.co) after:YYYY/MM/DD`
    (page through all results; `get_thread` for any thread with more than 5 messages, since previews
    show only the oldest 5). Write `W/bc_alerts.json` as `[{"id": <message id>, "date": <message date>, "text": <snippet>}]`

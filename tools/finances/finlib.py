@@ -45,7 +45,7 @@ def num(s):
 # ---------------------------------------------------------------- Rippling wallet
 # The Rippling export has no direction column. Known payroll amounts are pay-ins;
 # anything else is treated as a payout unless no matching deposit turns up (see match_rippling).
-PAY_IN = {2307.69, 2308.00, 2357.69, 1813.19, 494.50}
+PAY_IN = {2307.69, 2308.00, 2357.69, 1813.19, 494.50, 2446.15}  # 2446.15: new payroll from 2026-10-15
 
 
 def parse_rippling(path, source_name):
@@ -292,6 +292,49 @@ def parse_bancolombia(path):
     return rows
 
 
+# ---------------------------------------------------------------- Bancolombia online movements export
+# "MovimientosTusCuentasBancolombia<date>.xlsx" from the app/portal: columns Fecha, Descripción, Referencia, Valor.
+# It has every movement of the last ~30 days (interest and fees included) but no balance, so its rows are
+# provisional like the alert emails (txn_id BCM-...) and get swapped for the statement rows when the
+# quarterly statement arrives.
+PROVISIONAL_BC = ("BCE-", "BCM-")
+PROVISIONAL_NOTE = re.compile(r"from (alert email|Bancolombia movements export); replaced by the statement row "
+                              r"when the quarterly statement arrives")
+
+
+def _read_movements(path):
+    if path.lower().endswith(".xlsx"):
+        import openpyxl
+        ws = openpyxl.load_workbook(path, read_only=True, data_only=True).worksheets[0]
+        it = ws.iter_rows(values_only=True)
+        head = [str(h or "").strip() for h in next(it)]
+        return [dict(zip(head, v)) for v in it if v and any(x not in (None, "") for x in v)]
+    return list(csv.DictReader(open(path, encoding="utf-8-sig")))
+
+
+def parse_bc_movements(path, source_name):
+    rows, seen = [], collections.Counter()
+    for r in _read_movements(path):
+        f = r.get("Fecha")
+        if isinstance(f, datetime):
+            d = f.date().isoformat()
+        else:
+            d = str(f).strip().replace("/", "-")[:10]
+        desc = re.sub(r"\s+", " ", str(r.get("Descripción") or r.get("Descripcion") or "")).strip()
+        ref = str(r.get("Referencia") or "").strip()
+        ref = "" if ref.lower() == "null" else ref
+        a = num(r.get("Valor"))
+        key = (d, desc, round(a, 2), ref)
+        seen[key] += 1
+        flow, cat, review = bc_classify(desc, a, "savings")
+        rows.append(new_row(
+            txn_id="BCM-" + short_hash(*key, seen[key]), date=d, account="Bancolombia savings 6948", currency="COP",
+            amount=a, description=desc, counterparty=desc, flow_type=flow, category=cat, source_file=source_name,
+            needs_review=review if review and flow not in ("income", "fee") else "",
+            notes="from Bancolombia movements export; replaced by the statement row when the quarterly statement arrives"))
+    return rows
+
+
 # ---------------------------------------------------------------- Bancolombia alert emails
 # Input: JSON list of {"id", "date" (ISO), "text"} where text is the email snippet/body.
 # Each alert is rewritten into the wording the statement uses, so bc_classify and the
@@ -433,7 +476,7 @@ CAT = [
     ("Health & insurance", r"COLMEDICA|CRUZ VERDE|MEDICARTE|SHAIO|PHARMACIE|FARMACIA|DROGUERIA|UNID MED|LENTESPLUS|ALLEN PHARMA|BELLA PIEL|VITALSE|SEG DEUD|CEN MED"),
     ("Subscriptions & software", r"APPLE\.COM|OPENAI|ANTHROPIC|CLAUDE|AMAZON PRIME|Amazon Prime|GOPRO|TRAINERROAD|BRAVE|OPEN INC|FACEBK|GIGSKY|SERVICIOS WEB EBANX|RMTLY"),
     ("Phone & internet", r"COMCEL|MOVISTAR|XFERA|WINDTRE"),
-    ("Cycling & sport", r"BICICLETA|NITRO BIKES|3PUERTOS|PUERTOS GRAVEL|SPECIALIZED|2RUEDAS|BIKE SHELTER|CULTURE VELO|MVBIKE|DECATHLON|ADIDAS|COLUMBIA SPORTSWEAR|SUPERKARTS|SMASH MOUNTAIN|ADRENALINE|SUGAR MOUNTAIN|OUTER RANGE|WHITEWATER|MASBIC"),
+    ("Cycling & sport", r"BICICLETA|ROTOR BIKE|NITRO BIKES|3PUERTOS|PUERTOS GRAVEL|SPECIALIZED|2RUEDAS|BIKE SHELTER|CULTURE VELO|MVBIKE|DECATHLON|ADIDAS|COLUMBIA SPORTSWEAR|SUPERKARTS|SMASH MOUNTAIN|ADRENALINE|SUGAR MOUNTAIN|OUTER RANGE|WHITEWATER|MASBIC"),
     ("Entertainment & events", r"CINEMARK|CINE COLOMBIA|TU BOLETA|TAQUILLALIVE|TM \*|TICKET ZAMNA|COOPSERFUN|MUSEO|MUSEUM|ONE WORLD OBSY|TOPARA|RIFLE|PAYU\*BALOTO|NYPL|PINS MECHANICAL|RACK'EM"),
     ("Shopping (online)", r"AMAZON|AMZN|ALIEXPRESS|aliexpress|MERCADO ?PAGO|MERCADOPAGO|MERPAGO|MP\*|PAYPAL|SOUNDCORE|WOMPI|PAMPLING"),
     ("Shopping (retail)", r"MINISO|APPLE STORE|I SHOP|TITAN PLAZA BOGOTA|MACYS|DISNEY STORE|UPS SERVICIOS|FUJIFILM|SOUVENIRS|TIENDA NAT|MISCELANEA|STREET SHOP|EB \*ORBIT|INVERSIONES PRESTIGE|INVERSIONES MURCIA|VENTA\b|BUCONOS"),
