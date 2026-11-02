@@ -24,6 +24,12 @@
   setup fee (~$31 in the US; Colombia amount unconfirmed). Wise's Acceptable Use Policy bars business /
   client income on personal accounts, and Daniel is paid as a contractor → use **Wise Business**
   (sole trader / freelancer, cédula + RUT) to avoid an account freeze; it also covers future side-business income.
+- **ARQ (ex-DolarApp) vs Wise Business (checked 2026-11-02, not yet tested with real money):**
+  ARQ = $3 per incoming ACH + ~0.5% built into the USDc→COP rate (published bid 3,151 on 2026-10-19 vs
+  TRM 3,175 / close 3,156) → ~0.7% total on $1,400 vs Wise's 1.5%. Trade-offs: ACH takes 3–6 business days,
+  balance is held as USDc (virtual asset, run by DolarApp México), not a bank balance.
+  Plan: test one small Rippling payout into ARQ; if it beats Wise by ≥0.5%, use ARQ for COP conversions and
+  keep Wise Business as backup / for future clients.
 
 ## Legal / Tax Status
 
