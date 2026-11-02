@@ -16,6 +16,10 @@
   Wallbit → Bancolombia got on average **~1.9% below TRM** (5 transfers Jun–Sep 2026, range 0.8%–3.0%).
   Payoneer → Bancolombia (the route before Jun 2026) was ~2.4–2.7% below TRM.
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
+- **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
+  Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
+  Wallbit actual 4,349,170 COP (3,106.55/USD, ~3.8% below Wise's rate).
+  **Wise delivered ~104k COP (~$32, 2.3%) more.** Next step: point Rippling payouts to Wise.
 
 ## Legal / Tax Status
 
