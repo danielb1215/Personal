@@ -27,6 +27,9 @@
   **Actual Rippling quote 2026-11-02: Bank Transfer to Bancolombia, $2,600 → fee $20.00, $2,580 arrives, 1–3 business days.**
   With Bancolombia's ~0.6% conversion ≈ $35 (1.37%) on $2,600 vs Wise $37 (1.44%), Wallbit $44–60, ARQ ~$16 (est.).
   Flat fee → better the bigger the transfer (~0.8% at $10k). Intermediary deductions still unverified — test once.
+- **ARQ claim (Daniel read their page 2026-11-02):** only $3 to receive, conversion "based on TRM" / "real market rate,
+  no spread". If true: $3 on $2,600 = 0.12%. Evidence so far: ARQ bid 3,151.25 on 2026-10-19 vs TRM 3,174.67 (−0.74%) and
+  close 3,156.37 (−0.16%) → realistic 0.1–0.8% total. Cheapest route either way; verify with a first real conversion.
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
 - **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
