@@ -41,7 +41,11 @@
   (~1.75% at $500, ~1.43% at $2,900).
   Note: 2026-11-02 was a Colombian holiday (local FX market closed). Friday 10-30 close was 3,183–3,194 (TRM 3,182.99);
   Wise's 3,229.50 was ~1.2–1.5% above it (live offshore rate), while Wallbit's 3,106.55 sat ~2.4% below Friday's level.
-  Re-quote both on a normal business day to confirm. TRM that day was 3,182.99, so on the
+  Re-quote both on a normal business day to confirm.
+- **Wise simulated on the same 10 Wallbit transfer dates** (TRM as Wise's rate, fee $1.95 + 1.36%; Nov 2 = real quote):
+  Wise total fee $86.34 (1.76%) vs Wallbit $112.67 (2.30%) → Wise +88.5k COP (~$27). But Wallbit won 6 of 10 —
+  the small transfers (Wise's fixed fee) — and **Jun–Sep alone Wallbit was ~16k COP better**; the whole gap is the
+  Nov 2 transfer. Batched monthly, Wise ≈1.5% vs Wallbit's Jun–Sep 1.69%: a small edge. ARQ (~0.7%) would beat both. TRM that day was 3,182.99, so on the
   TRM basis Wallbit's Nov 2 cost was ~2.4% (not 3.8%). Wise caps sends to Colombia at ~$2,900 per transfer.
 
 ## Legal / Tax Status
