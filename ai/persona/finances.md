@@ -30,6 +30,11 @@
   balance is held as USDc (virtual asset, run by DolarApp México), not a bank balance.
   Plan: test one small Rippling payout into ARQ; if it beats Wise by ≥0.5%, use ARQ for COP conversions and
   keep Wise Business as backup / for future clients.
+- **Total Wallbit cost, Jun 10 – Nov 2 2026 (checked 2026-11-02):** 10 transfers to Bancolombia 6948,
+  $4,904.67 → **$112.67 lost to the rate (2.30%)**, from 0.1% to 3.8% per transfer (the Nov 2 one alone: $53.30).
+  Plus ~$84–113 estimated on $4,940 of local payouts to other people (Fer, Luisa, Maribel, Valeria, Mauricio;
+  their COP amounts aren't in the statements) and a $9.84 "Balance adjustment (debit)" on 2026-08-07.
+  **≈ $205–235 in ~5 months on ~$9,850 moved.** Unexplained: PSE 99,697 COP to "Pexto Capital SAS" on 2026-10-07.
 
 ## Legal / Tax Status
 
