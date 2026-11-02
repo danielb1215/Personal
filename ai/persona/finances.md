@@ -20,6 +20,10 @@
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
   Wallbit actual 4,349,170 COP (3,106.55/USD, ~3.8% below Wise's rate).
   **Wise delivered ~104k COP (~$32, 2.3%) more.** Next step: point Rippling payouts to Wise.
+- **Wise Business vs Personal (checked 2026-11-02):** same conversion pricing; Business costs a one-time
+  setup fee (~$31 in the US; Colombia amount unconfirmed). Wise's Acceptable Use Policy bars business /
+  client income on personal accounts, and Daniel is paid as a contractor → use **Wise Business**
+  (sole trader / freelancer, cédula + RUT) to avoid an account freeze; it also covers future side-business income.
 
 ## Legal / Tax Status
 
