@@ -38,7 +38,10 @@
   Movistar bill paid through Pexto's collection service — not a Wallbit cost; Sheet row and classifier fixed 2026-11-02.)
 - **Wise fee check (2026-11-02):** $21.02 on $1,400 from USD balance = 1.50% is from Daniel's own quote (rate 3,229.50,
   locked). Second quote $2,500 → fee $36.00 (1.44%), same rate → Wise USD→COP ≈ **$1.95 fixed + 1.36%**
-  (~1.75% at $500, ~1.43% at $2,900). TRM that day was 3,182.99, so on the
+  (~1.75% at $500, ~1.43% at $2,900).
+  Note: 2026-11-02 was a Colombian holiday (local FX market closed). Friday 10-30 close was 3,183–3,194 (TRM 3,182.99);
+  Wise's 3,229.50 was ~1.2–1.5% above it (live offshore rate), while Wallbit's 3,106.55 sat ~2.4% below Friday's level.
+  Re-quote both on a normal business day to confirm. TRM that day was 3,182.99, so on the
   TRM basis Wallbit's Nov 2 cost was ~2.4% (not 3.8%). Wise caps sends to Colombia at ~$2,900 per transfer.
 
 ## Legal / Tax Status
