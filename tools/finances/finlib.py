@@ -219,8 +219,12 @@ def bc_classify(desc, amt, acct_type):
         return "income", "Interest", ""
     if "TRANSF INTERNACIONAL RECIBIDA" in d:
         return "internal_transfer", "Transfer", ""
+    if "PEXTO" in d and amt > 0:  # 'TRANSF DE Pexto Colom...': Wallbit's local payout of your USD
+        return "internal_transfer", "Transfer", ""
+    if "PEXTO CAPITAL" in d:  # Pexto Capital is a bill collector (recaudo); Daniel 2026-11-02: it's Movistar
+        return "spending", "Phone & internet", ""
     if "PEXTO" in d:
-        return "internal_transfer", "Transfer", "" if amt > 0 else "COP sent to Pexto (Wallbit's local partner) - top-up of Wallbit?"
+        return "spending", "Bills & online payments (PSE)", "bill paid through Pexto (recaudo) - which bill?"
     if d.startswith("PAGO DE NOM") or "ONTOP DIGITAL" in d:
         return "income", "Salary", ""
     if "TRANSFERENCIA VIRTUAL PYME" in d:
@@ -475,7 +479,7 @@ def link(src, dst, kind, rate=None):
     for r in (src, dst):
         if r["needs_review"].startswith(("USD->COP", "confirm COP", "paid from which", "no matching",
                                          "Rippling deposit without", "card payment not found", "card payment with no",
-                                         "foreign transfer received", "USD side not found", "COP sent to Pexto")):
+                                         "foreign transfer received", "USD side not found")):
             r["needs_review"] = ""
 
 
