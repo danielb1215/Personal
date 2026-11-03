@@ -30,6 +30,10 @@
 - **ARQ claim (Daniel read their page 2026-11-02):** only $3 to receive, conversion "based on TRM" / "real market rate,
   no spread". If true: $3 on $2,600 = 0.12%. Evidence so far: ARQ bid 3,151.25 on 2026-10-19 vs TRM 3,174.67 (−0.74%) and
   close 3,156.37 (−0.16%) → realistic 0.1–0.8% total. Cheapest route either way; verify with a first real conversion.
+- **Live quotes 2026-11-03 for 1,800,000 COP** (Wise mid 3,219; TRM 3,182.99): ARQ 3,197 → $563.03 (+$3 per incoming ACH,
+  −0.68% vs mid); Wallbit 3,179 → $566.21 (−1.24%); Wise 3,219 + $9 fee → $568.18 (−1.6%). All within ~$5 at this size.
+  ARQ is not "TRM": it was above TRM today and below it on 10-19 — it tracks the live market minus ~0.7%.
+  Wallbit was fine today; its problem is variance (0.1%–3.8%).
   Wallbit beats Payoneer, but Wise / ARQ (ex-DolarApp) may be cheaper — pending a side-by-side quote test.
 - **Side-by-side test 2026-11-02, $1,400 → Bancolombia 6948:**
   Wise quote 4,453,416 COP (rate 3,229.50, fee $21.02 = 1.5%, ~1.5% total cost) vs
